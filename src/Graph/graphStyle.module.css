@@ -45,7 +45,7 @@
   stroke-width: 2px;
 }
 
-.tick text {
+:global(.tick) text {
   direction: rtl;
   transform: rotate(-90deg) translate(-25px, -13px);
 }
