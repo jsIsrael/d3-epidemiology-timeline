@@ -1,13 +1,12 @@
 import * as React from "react";
-// import { runD3Stuff } from "./runD3Stuff";
-import { runD3StuffSecondIteration } from "./secondIterationD3";
+import { runD3Stuff } from "./runD3Stuff";
 
 export function Graph() {
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     if (containerRef.current) {
-      runD3StuffSecondIteration(containerRef.current);
+      runD3Stuff(containerRef.current);
     }
   }, []);
 
