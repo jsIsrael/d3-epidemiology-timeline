@@ -17,10 +17,14 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-hmr": "craco start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dedup": "yarn-deduplicate -s fewer yarn.lock"
+    "dedup": "yarn-deduplicate -s fewer yarn.lock",
+    "validate-code": "yarn lint && yarn prettier-check",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "prettier-check": "prettier src --check"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,8 +42,20 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^5.6.4",
+    "@jackwilsdon/craco-use-babelrc": "^1.0.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.2.0",
     "@testing-library/dom": "^6",
+    "husky": "^4.2.3",
     "prettier": "^2.0.1",
+    "react-refresh": "^0.8.1",
+    "webpack-hot-middleware": "^2.25.0",
     "yarn-deduplicate": "^2.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn prettier src --check",
+      "pre-commit": "yarn prettier src --check"
+    }
   }
 }
