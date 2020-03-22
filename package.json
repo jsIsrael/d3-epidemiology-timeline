@@ -61,5 +61,8 @@
       "pre-push": "yarn prettier src --check",
       "pre-commit": "yarn prettier src --check"
     }
+  },
+  "resolutions": {
+    "lodash.mergewith": "^4.6.2"
   }
 }
