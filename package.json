@@ -1,0 +1,65 @@
+{
+  "name": "d3-epidemiology-timeline",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "classnames": "^2.2.6",
+    "d3": "^5.15.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1",
+    "typescript": "~3.8.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "start-hmr": "craco start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dedup": "yarn-deduplicate -s fewer yarn.lock",
+    "validate-code": "yarn lint && yarn prettier-check",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "prettier-check": "prettier src --check"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^5.6.4",
+    "@jackwilsdon/craco-use-babelrc": "^1.0.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.2.0",
+    "@testing-library/dom": "^6",
+    "@types/classnames": "^2.2.10",
+    "@types/d3": "^5.7.2",
+    "husky": "^4.2.3",
+    "prettier": "^2.0.1",
+    "react-refresh": "^0.8.1",
+    "webpack-hot-middleware": "^2.25.0",
+    "yarn-deduplicate": "^2.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn prettier src --check",
+      "pre-commit": "yarn prettier src --check"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.event circle {
+  fill: #fff;
+  stroke: green;
+  stroke-width: 3px;
+}
+
+.event line {
+  stroke: #ddd;
+  stroke-dasharray: 5;
+  stroke-width: 3px;
+}
+
+.event text {
+  transform: translate(-20px, 20px);
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.case rect {
+  fill: transparent;
+  stroke: green;
+  stroke-width: 3px;
+}
+
+.case line {
+  stroke: brown;
+  stroke-width: 3px;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+:global(.tick) text {
+  direction: rtl;
+  transform: rotate(-90deg) translate(-25px, -13px);
+}
+
+/* .tick line {
+  stroke: #ddd;
+} */
