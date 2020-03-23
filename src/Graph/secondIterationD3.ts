@@ -6,17 +6,47 @@ import heTimeLocale from "./locale/he-IL.json";
 import styles from "./secondIteration.module.css";
 import classnames from "classnames";
 import treeData, { events } from "./data2ndIteration";
+import { CaseNode } from "../listToGraph/interfaces";
 
-export function runD3StuffSecondIteration(container: HTMLDivElement) {
+import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
+import rawNodes from "../listToGraph/nodes.json";
+import rawEdges from "../listToGraph/edges.json";
+
+const noop = () => {};
+
+// @ts-ignore
+const g = buildGraph(rawNodes, rawEdges);
+
+const cases = toCaseNodeTree(g).filter((n) => n.children !== undefined);
+
+// let lama = treeData;
+
+export function runD3StuffSecondIteration(
+  container: HTMLDivElement,
+  onNodeHover: (node: CaseNode) => void = noop,
+  onEdgeHover: (node: CaseNode) => void = noop
+) {
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
-  const height = 300;
+  const height = 1500;
+
+  const fakeRoot: CaseNode = {
+    name: "Fake Root",
+    date: new Date("03/01/2020"),
+    type: "Flight",
+    children: cases.slice(0, 20),
+    id: "blalbalb",
+  };
 
   //  assigns the data to a hierarchy using parent-child relationships
-  let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
+  let nodesInitial = d3.hierarchy(fakeRoot, ({ children }) => children);
+  // let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
+  // console.log(nodesInitial, nodesInitial1);
+
+  // debugger;
 
   const width = nodesInitial.height * 200;
 
@@ -25,7 +55,8 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
   // maps the node data to the tree layout
   const nodes = treemap(nodesInitial);
 
-  const parseDate = (date: string) => parse(date, "dd/MM/yyyy", 0);
+  const parseDate = (date: string) =>
+    date instanceof Date ? date : parse(date, "dd/MM/yyyy", 0);
 
   const startDate = nodes.descendants().reduce((minDate, { data }) => {
     return minDate > parseDate(data.date) ? parseDate(data.date) : minDate;
@@ -41,6 +72,15 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
     .ticks(d3.timeDay.every(2))
     .tickFormat(d3.timeFormat("%d %b"));
 
+  const zoom = d3
+    .zoom()
+    .scaleExtent([1, 40])
+    .translateExtent([
+      [-100, -100],
+      [width + 90, height + 100],
+    ])
+    .on("zoom", () => svg.attr("transform", d3.event.transform));
+
   // append the svg object to the body of the page
   // appends a 'group' element to 'svg'
   // moves the 'group' element to the top left margin
@@ -49,6 +89,8 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
+  // this kind of zoom is disabled for now
+  // .call(zoom);
 
   let g = svg
     .append("g")
@@ -70,6 +112,7 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
   link
     .append("path")
     .on("mouseover", function (d) {
+      onEdgeHover(d.data);
       div.transition().duration(200).style("opacity", 0.9);
       div
         .html(d.data.name)
@@ -138,9 +181,22 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
   // adds each node as a group
   const node = g
     .selectAll(".node")
+    // onNodeHover(d.data);
     .data(nodes.descendants())
     .enter()
     .append("g")
+    .on("mouseover", function (d) {
+      onNodeHover(d.data);
+
+      div.transition().duration(200).style("opacity", 0.9);
+      div
+        .html(d.data.name)
+        .style("left", d3.event.pageX + "px")
+        .style("top", d3.event.pageY - 28 + "px");
+    })
+    .on("mouseout", function (d) {
+      div.transition().duration(200).style("opacity", 0);
+    })
     .attr("class", function (d) {
       return classnames(
         styles.node,
@@ -240,4 +296,8 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
       .attr("y2", height - 25)
       .attr("transform", "translate(0," + (-height - 20) + ")");
   });
+
+  return () => {
+    svg.remove();
+  };
 }

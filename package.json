@@ -27,7 +27,8 @@
     "dedup": "yarn-deduplicate -s fewer yarn.lock",
     "validate-code": "yarn lint && yarn prettier-check",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "prettier-check": "prettier src --check"
+    "prettier-check": "prettier src --check",
+    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache"
   },
   "eslintConfig": {
     "extends": "react-app"
