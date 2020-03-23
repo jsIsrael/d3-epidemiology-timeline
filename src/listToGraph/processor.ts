@@ -44,7 +44,7 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
         return {
           id: n.id,
           type: "Patiant",
-          name: n.name,
+          name: `${n.name}-${n.id}`,
           date: n.firstPositiveResultDate,
           gender: n.gender,
           status: n.status,
@@ -61,13 +61,15 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
   for (const n of caseNodes) {
     const o = orignMap.get(n.id)!;
     if (o.children.length > 0) {
-      map.get(n.id)!.children = o.children.map((c) => map.get(c)!);
+      map.get(n.id)!.children = o.children
+        .map((c) => map.get(c)!)
+        .filter((c) => c.type !== "Flight");
     }
   }
 
   return caseNodes.filter((n) => {
     const o = orignMap.get(n.id)!;
-    return o.parents.length === 0;
+    return o.parents.length === 0 || n.type === "Flight";
   });
 }
 
@@ -81,6 +83,11 @@ export function buildGraph(
   );
 
   for (const edge of rawEdges) {
+    if (edge.from.id === edge.to.id) {
+      console.warn("Direct circularity detected", edge);
+      continue;
+    }
+
     const parentNode = nodesMap.get(edge.from.id);
     const childNode = nodesMap.get(edge.to.id);
 
@@ -187,3 +194,65 @@ function parseFlightDetails(rawName: string) {
     date: parseAdHocDate(r[1]),
   };
 }
+
+// function getAllAncestorsWithoutCircularity(
+//   nodeId: number,
+//   allNodes: ProcessedNode[]
+// ) {
+//   const allNodesMap = new Map(allNodes.map((n) => [n.id, n]));
+//   const node = allNodesMap.get(nodeId)!;
+
+//   const allParents = new Set(node.parents);
+
+//   getAllAncestorsWithoutCircularityStep(nodeId, allNodesMap, allParents);
+
+//   return allParents;
+// }
+
+// function getAllAncestorsWithoutCircularityStep(
+//   nodeId: number,
+//   allNodesMap: Map<number, ProcessedNode>,
+//   allParents: Set<number>
+// ) {
+//   const node = allNodesMap.get(nodeId)!;
+
+//   const effectiveParents = node.parents.filter((p) => !allParents.has(p));
+
+//   if (effectiveParents.length > 0) {
+//     for (const parent of effectiveParents) {
+//       allParents.add(parent);
+//       getAllAncestorsWithoutCircularityStep(parent, allNodesMap, allParents);
+//     }
+//   }
+// }
+
+// function getAllAncestorsWithoutCircularity(
+//   nodeId: number,
+//   allNodes: ProcessedNode[]
+// ) {
+//   const allNodesMap = new Map(allNodes.map((n) => [n.id, n]));
+//   const node = allNodesMap.get(nodeId)!;
+
+//   const allParents = new Set(node.parents);
+
+//   getAllAncestorsWithoutCircularityStep(nodeId, allNodesMap, allParents);
+
+//   return allParents;
+// }
+
+// function getAllAncestorsWithoutCircularityStep(
+//   nodeId: number,
+//   allNodesMap: Map<number, ProcessedNode>,
+//   allParents: Set<number>
+// ) {
+//   const node = allNodesMap.get(nodeId)!;
+
+//   const effectiveParents = node.parents.filter((p) => !allParents.has(p));
+
+//   if (effectiveParents.length > 0) {
+//     for (const parent of effectiveParents) {
+//       allParents.add(parent);
+//       getAllAncestorsWithoutCircularityStep(parent, allNodesMap, allParents);
+//     }
+//   }
+// }

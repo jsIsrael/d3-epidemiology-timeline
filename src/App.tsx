@@ -11,7 +11,7 @@ function App() {
     <div>
       <Graph onEdgeHover={onEdgeHover} />
       <hr />
-      <GraphOld />
+      {/* <GraphOld /> */}
     </div>
   );
 }

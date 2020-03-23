@@ -9,15 +9,20 @@ import treeData, { events } from "./data2ndIteration";
 import { CaseNode } from "../listToGraph/interfaces";
 
 import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
+import { cleanGraph } from "../listToGraph/clean-graph";
 import rawNodes from "../listToGraph/nodes.json";
 import rawEdges from "../listToGraph/edges.json";
 
 const noop = () => {};
 
-// @ts-ignore
-const g = buildGraph(rawNodes, rawEdges);
+const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges);
+// const g = buildGraph(rawNodes, rawEdges);
 
-const cases = toCaseNodeTree(g).filter((n) => n.children !== undefined);
+const removeBadPatientsOrFlightsIds = new Set([107341, 107881, 107975, 107924]);
+
+const cases = toCaseNodeTree(g)
+  .filter((n) => n.children !== undefined)
+  .filter((n) => !removeBadPatientsOrFlightsIds.has(n.id));
 
 // let lama = treeData;
 
@@ -31,24 +36,29 @@ export function runD3StuffSecondIteration(
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
-  const height = 1500;
+  const height = 16000;
 
   const fakeRoot: CaseNode = {
     name: "Fake Root",
-    date: new Date("03/01/2020"),
+    date: new Date("2/01/2020"),
     type: "Flight",
-    children: cases.slice(0, 20),
+    children: cases,
     id: "blalbalb",
   };
 
+  // for (const c of cases) {
+  //   console.log("im as", c.id);
+  //   d3.hierarchy(c, ({ children }) => children);
+  //   console.log("done", c.id);
+  // }
+
   //  assigns the data to a hierarchy using parent-child relationships
   let nodesInitial = d3.hierarchy(fakeRoot, ({ children }) => children);
+
   // let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
   // console.log(nodesInitial, nodesInitial1);
 
-  // debugger;
-
-  const width = nodesInitial.height * 200;
+  const width = nodesInitial.height * 400;
 
   const treemap = d3.tree().size([height - 90, width]);
 
