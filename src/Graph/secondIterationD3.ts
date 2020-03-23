@@ -6,6 +6,18 @@ import heTimeLocale from "./locale/he-IL.json";
 import styles from "./secondIteration.module.css";
 import classnames from "classnames";
 import treeData, { events } from "./data2ndIteration";
+import { CaseNode } from "../listToGraph/interfaces";
+
+import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
+import rawNodes from "../listToGraph/nodes.json";
+import rawEdges from "../listToGraph/edges.json";
+
+// @ts-ignore
+const g = buildGraph(rawNodes, rawEdges);
+
+const cases = toCaseNodeTree(g).filter((n) => n.children !== undefined);
+
+// let lama = treeData;
 
 export function runD3StuffSecondIteration(container: HTMLDivElement) {
   // @ts-ignore
@@ -13,10 +25,22 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
-  const height = 300;
+  const height = 1500;
+
+  const fakeRoot: CaseNode = {
+    name: "Fake Root",
+    date: new Date("03/01/2020"),
+    type: "Flight",
+    children: cases.slice(0, 20),
+    id: "blalbalb",
+  };
 
   //  assigns the data to a hierarchy using parent-child relationships
-  let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
+  let nodesInitial = d3.hierarchy(fakeRoot, ({ children }) => children);
+  // let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
+  // console.log(nodesInitial, nodesInitial1);
+
+  // debugger;
 
   const width = nodesInitial.height * 200;
 
@@ -25,7 +49,8 @@ export function runD3StuffSecondIteration(container: HTMLDivElement) {
   // maps the node data to the tree layout
   const nodes = treemap(nodesInitial);
 
-  const parseDate = (date: string) => parse(date, "dd/MM/yyyy", 0);
+  const parseDate = (date: string) =>
+    date instanceof Date ? date : parse(date, "dd/MM/yyyy", 0);
 
   const startDate = nodes.descendants().reduce((minDate, { data }) => {
     return minDate > parseDate(data.date) ? parseDate(data.date) : minDate;

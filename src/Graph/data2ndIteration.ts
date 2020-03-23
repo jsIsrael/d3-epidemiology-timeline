@@ -1,4 +1,4 @@
-interface CaseNode {
+export interface CaseNode {
   name: string;
   id: number;
   type: "Patiant" | "Flight";
