@@ -5,8 +5,8 @@ import { Event } from "./data2ndIteration";
 import { CaseNode } from "../listToGraph/interfaces";
 
 interface Props {
-  onNodeHover?: (node: CaseNode) => void;
-  onEdgeHover?: (node: CaseNode) => void;
+  onNodeHover?: (node: CaseNode, parent?: CaseNode) => string;
+  onEdgeHover?: (node: CaseNode, parent?: CaseNode) => string;
 }
 
 export function Graph({ onNodeHover, onEdgeHover }: Props) {

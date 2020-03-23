@@ -23,8 +23,8 @@ const cases = toCaseNodeTree(g).filter((n) => n.children !== undefined);
 
 export function runD3StuffSecondIteration(
   container: HTMLDivElement,
-  onNodeHover: (node: CaseNode) => void = noop,
-  onEdgeHover: (node: CaseNode) => void = noop
+  onNodeHover: (node: CaseNode, parent?: CaseNode) => string = noop,
+  onEdgeHover: (node: CaseNode, parent?: CaseNode) => string = noop
 ) {
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);
@@ -92,6 +92,21 @@ export function runD3StuffSecondIteration(
   // this kind of zoom is disabled for now
   // .call(zoom);
 
+  svg
+    .append("defs")
+    .append("marker")
+    .attr("id", "arrow")
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", 10)
+    .attr("refY", 5)
+    .attr("markerWidth", 10)
+    .attr("markerHeight", 10)
+    .attr("orient", "auto-start-reverse")
+    .append("path")
+    .attr("class", styles.arrow)
+
+    .attr("d", "M 0 0 L 10 5 L 0 10 z");
+
   let g = svg
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -112,17 +127,17 @@ export function runD3StuffSecondIteration(
   link
     .append("path")
     .on("mouseover", function (d) {
-      onEdgeHover(d.data);
       div.transition().duration(200).style("opacity", 0.9);
       div
-        .html(d.data.name)
+        .html(onEdgeHover(d.data, d.parent?.data))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
     .on("mouseout", function (d) {
       div.transition().duration(200).style("opacity", 0);
     })
-    .attr("id", (d) => d.data.id)
+    .attr("marker-end", "url(#arrow)")
+    .attr("id", (d) => "path" + d.data.id)
     .attr("class", styles.link)
     .attr("d", (d) => {
       const calcY = (item: d3.HierarchyPointNode<unknown> | null) =>
@@ -160,11 +175,12 @@ export function runD3StuffSecondIteration(
         "," +
         d.parent.x +
         " " +
-        (calcY(d) + calcY(d.parent)) / 2 +
+        ((calcY(d) + calcY(d.parent)) / 2 - 20) +
         "," +
         d.x +
         " " +
-        calcY(d) +
+        (calcY(d) +
+          (parseDate(d.parent.data.date) > parseDate(d.data.date) ? 10 : -10)) +
         "," +
         d.x
       );
@@ -172,11 +188,13 @@ export function runD3StuffSecondIteration(
 
   // link
   //   .append("text")
-  //   .attr("class", "line-text")
+  //   .attr("class", styles["line-text"])
   //   .append("textPath")
-  //   // .attr("textLength", "100%")
-  //   .attr("xlink:href", d => `#${d.data.id}`)
-  //   .text(({ data }) => data.name);
+  //   .style("text-anchor", "middle")
+  //   .style("pointer-events", "none")
+  //   .attr("startOffset", "50%")
+  //   .attr("xlink:href", (d) => `#path${d.data.id}`)
+  //   .text(({ data }) => data.name.split("").reverse().join(""));
 
   // adds each node as a group
   const node = g
@@ -186,11 +204,9 @@ export function runD3StuffSecondIteration(
     .enter()
     .append("g")
     .on("mouseover", function (d) {
-      onNodeHover(d.data);
-
       div.transition().duration(200).style("opacity", 0.9);
       div
-        .html(d.data.name)
+        .html(onNodeHover(d.data, d.parent?.data))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })

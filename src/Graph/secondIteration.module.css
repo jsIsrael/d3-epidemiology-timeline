@@ -67,9 +67,22 @@
   fill: none;
   stroke: #ccc;
   stroke-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.arrow {
+  fill: white;
+  stroke: #ccc;
+  stroke-width: 1px;
+}
+
+.link:hover {
+  stroke: brown;
+  stroke-width: 3px;
 }
 
 .line-text {
+  direction: rtl;
   font: 10px sans-serif;
 }
 
@@ -85,8 +98,7 @@
 div.tooltip {
   position: absolute;
   text-align: center;
-  width: 60px;
-  height: 28px;
+  width: 100px;
   padding: 2px;
   font: 12px sans-serif;
   background: lightsteelblue;
