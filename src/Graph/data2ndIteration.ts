@@ -1,3 +1,4 @@
+import parse from "date-fns/parse";
 export interface Event {
   description: string;
   date: Date;
@@ -109,5 +110,85 @@ export const events = [
     description: "event 2",
   },
 ];
+
+const localParse = (s: string) => parse(s, "dd.MM.yyyy", 0);
+
+export const events2 = [
+  {
+    date: localParse("15.03.2020"),
+    description:
+      "הוראות משרד הבריאות המעודכנות - הפסקת פעילות כל מוסדות החינוך,\nמקומות עבודה ייערכו להמשך העברת עבודה מהבית",
+  },
+  {
+    date: localParse("13.03.2020"),
+    description:
+      "הורחבה פעילות משטרת ישראל לסיוע למשרד הבריאות באכיפת הפרות צווי בידוד ואיסור התקהלות",
+  },
+  {
+    date: localParse("11.03.2020"),
+    description: "הנחיות חדשות לאוכלוסייה - לא לקיים אירועים מעל 100",
+  },
+  {
+    date: localParse("11.03.2020"),
+    description: "קריאה להמנע מכניסה לשטחי הרשות הפלשתינאית",
+  },
+  {
+    date: localParse("10.03.2020"),
+    description:
+      "הנחיות חדשות - לא לקיים אירועים מעל 2,000 איש\nלהימנע מביקורים בבתי חולים ובמוסדות לקשישים.",
+  },
+  {
+    date: localParse("10.03.2020"),
+    description: "עדכון לגבי קבוצת התיירים מגרמניה",
+  },
+  {
+    date: localParse("10.03.2020"),
+    description: "דוברות שיבא: עדכון בנוגע לרופאה שנבדקה לקורונה",
+  },
+  {
+    date: localParse("08.03.2020"),
+    description: "בידוד למי שביקרו בבית לחם, בית ג'אלה ובית סחור",
+  },
+  {
+    date: localParse("05.03.2020"),
+    description: "קבוצת תיירים מיוון",
+  },
+  {
+    date: localParse("04.03.2020"),
+    description: "השקת אפליקציה למידע ותמיכה בנושא קורונה: 11 צעדים",
+  },
+  {
+    date: localParse("26.02.2020"),
+    description:
+      "עדכון קורונה: אזהרת מסע לאיטליה, אמצעים למניעת הדבקה בקלפי לאדם המצוי בבידוד",
+  },
+  {
+    date: localParse("23.02.2020"),
+    description: "השעיית משלחות תלמידים לפולין נוכח התפרצות נגיף הקורונה החדש",
+  },
+  {
+    date: localParse("22.02.2020"),
+    description: "הודעה לציבור – משרד הבריאות משלחת תיירים מדרום קוריאה",
+  },
+  {
+    date: localParse("16.02.2020"),
+    description:
+      "החלת בידוד בית ל-14 יום מהשהות האחרונה בתאילנד, הונג קונג, מקאו, סינגפור",
+  },
+  {
+    date: localParse("02.02.2020"),
+    description: 'מנכ"ל משרד הבריאות חתם על צו המורה על חובת בידוד',
+  },
+  {
+    date: localParse("30.01.2020"),
+    description: "סגירת מעברים יבשתיים וימיים",
+  },
+  {
+    date: localParse("24.01.2020"),
+    description: "ביצוע בדיקת מעבדה ראשונה לקורונה",
+  },
+];
+
+// console.log({ events2 });
 
 export default a;

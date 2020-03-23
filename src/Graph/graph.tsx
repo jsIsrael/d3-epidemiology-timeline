@@ -33,7 +33,7 @@ export function Graph({
 
       try {
         window.requestAnimationFrame(() => {
-          document.querySelector(`.id-107945`)!.scrollIntoView({
+          document.querySelector(`.id-107991`)!.scrollIntoView({
             behavior: "smooth",
             block: "center",
             inline: "center",
