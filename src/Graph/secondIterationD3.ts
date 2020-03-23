@@ -5,7 +5,7 @@ import parse from "date-fns/parse";
 import heTimeLocale from "./locale/he-IL.json";
 import styles from "./secondIteration.module.css";
 import classnames from "classnames";
-import treeData, { events } from "./data2ndIteration";
+import treeData, { events, events2 } from "./data2ndIteration";
 import { CaseNode } from "../listToGraph/interfaces";
 
 import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
@@ -15,7 +15,35 @@ import rawEdges from "../listToGraph/edges.json";
 
 const noop = () => {};
 
-const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges);
+function isValidDate(d: Date | undefined | null) {
+  if (d === undefined || d === null) {
+    return false;
+  }
+
+  if (d.getTime() === 0) {
+    return false;
+  }
+
+  return true;
+}
+
+const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges).filter((n) => {
+  if (n.type === "Patient" && !isValidDate(n.firstPositiveResultDate)) {
+    return false;
+  }
+
+  if (n.type === "Flight" && !isValidDate(n.date)) {
+    return false;
+  }
+
+  return true;
+});
+
+// console.log({
+//   g,
+//   a: buildGraph(rawNodes, cleanGraph(rawEdges).edges),
+// });
+
 // const g = buildGraph(rawNodes, rawEdges);
 
 const removeBadPatientsOrFlightsIds = new Set([107341, 107881, 107975, 107924]);
@@ -38,7 +66,7 @@ export function runD3StuffSecondIteration(
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
-  const height = 16000;
+  const height = 30000;
 
   const fakeRoot: CaseNode = {
     name: "Fake Root",
@@ -229,6 +257,7 @@ export function runD3StuffSecondIteration(
     })
     .attr("class", function (d) {
       return classnames(
+        `id-${d.data.id}`,
         `level-${d.depth}`,
         styles.node,
         styles[d.data.type],
@@ -309,18 +338,28 @@ export function runD3StuffSecondIteration(
       return d.data.name;
     });
 
-  events.forEach(({ date, description }) => {
+  events2.forEach(({ date, description }) => {
     const g = svg
       .append("g")
       .attr(
         "transform",
         "translate(" + timeScale(date) + "," + (height + 25) + ")"
       )
-      .attr("class", styles.event);
+      .attr("class", styles.event)
+      .on("mouseover", function (d) {
+        div.transition().duration(200).style("opacity", 0.9);
+        div
+          .html(description)
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY - 28 + "px");
+      })
+      .on("mouseout", function () {
+        div.transition().duration(200).style("opacity", 0);
+      });
 
     g.append("circle").attr("r", 10);
 
-    g.append("text").text(description);
+    g.append("text").text(description.substr(0, 10) + "...");
 
     g.append("line")
       .attr("y1", 0)

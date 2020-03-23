@@ -44,7 +44,7 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
         return {
           id: n.id,
           type: "Patiant",
-          name: `${n.name}-${n.id}`,
+          name: `${n.name}`,
           date: n.firstPositiveResultDate,
           gender: n.gender,
           status: n.status,
@@ -190,7 +190,8 @@ function parseFlightDetails(rawName: string) {
   }
 
   return {
-    name: rawName.replace("-" + r[1], ""),
+    // name: rawName.replace("-" + r[1], ""),
+    name: rawName,
     date: parseAdHocDate(r[1]),
   };
 }
