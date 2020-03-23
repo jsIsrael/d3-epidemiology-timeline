@@ -37,6 +37,7 @@ export function Graph({
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
   );
+  const [showOrphans, setShowOrphans] = React.useState(false);
 
   const selectedNodeDebounced = useDebounce(selectedNode, 1000);
 
@@ -45,6 +46,7 @@ export function Graph({
 
     if (containerRef.current) {
       destroy = runD3StuffSecondIteration(
+        showOrphans,
         containerRef.current,
         onNodeHover,
         onEdgeHover,
@@ -54,7 +56,13 @@ export function Graph({
     }
 
     return destroy;
-  }, [onNodeHover, onEdgeHover, nodeHoverTooltip, edgeHoverTooltip]);
+  }, [
+    onNodeHover,
+    onEdgeHover,
+    nodeHoverTooltip,
+    edgeHoverTooltip,
+    showOrphans,
+  ]);
 
   React.useEffect(() => {
     if (!selectedNodeDebounced) {
@@ -83,7 +91,7 @@ export function Graph({
           position: "fixed",
           top: 10,
           left: 10,
-          backgroundColor: "red",
+          // backgroundColor: "red",
           boxShadow: "1px 1px 1px #000",
         }}
       >
@@ -97,6 +105,17 @@ export function Graph({
             setSelectedNode(v);
           }}
         />
+        <br />
+        <input
+          type="checkbox"
+          checked={showOrphans}
+          onChange={() => {
+            setShowOrphans((v) => {
+              return !v;
+            });
+          }}
+        />{" "}
+        Show Singular
       </div>
     </>
   );

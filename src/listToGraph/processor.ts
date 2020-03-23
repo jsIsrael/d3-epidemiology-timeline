@@ -34,11 +34,20 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
   const caseNodes = nodes
     .map((n): CaseNode | null => {
       if (n.type === "Flight") {
+        let country = "";
+        try {
+          // @ts-ignore
+          country = nodes.find((localNode) => n.parents[0] === localNode.id)
+            .name;
+        } catch (e) {}
+
         return {
           type: "Flight",
-          name: n.name,
+          name: `${country} - ${n.name}`,
           id: n.id,
           date: n.date || new Date(),
+          // @ts-ignore
+          country,
         };
       } else if (n.type === "Patient") {
         return {
