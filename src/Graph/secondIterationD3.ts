@@ -9,46 +9,58 @@ import treeData, { events } from "./data2ndIteration";
 import { CaseNode } from "../listToGraph/interfaces";
 
 import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
+import { cleanGraph } from "../listToGraph/clean-graph";
 import rawNodes from "../listToGraph/nodes.json";
 import rawEdges from "../listToGraph/edges.json";
 
 const noop = () => {};
 
-// @ts-ignore
-const g = buildGraph(rawNodes, rawEdges);
+const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges);
+// const g = buildGraph(rawNodes, rawEdges);
 
-const cases = toCaseNodeTree(g).filter((n) => n.children !== undefined);
+const removeBadPatientsOrFlightsIds = new Set([107341, 107881, 107975, 107924]);
+
+const cases = toCaseNodeTree(g)
+  .filter((n) => n.children !== undefined)
+  .filter((n) => !removeBadPatientsOrFlightsIds.has(n.id));
 
 // let lama = treeData;
 
 export function runD3StuffSecondIteration(
   container: HTMLDivElement,
-  onNodeHover: (node: CaseNode, parent?: CaseNode) => string = noop,
-  onEdgeHover: (node: CaseNode, parent?: CaseNode) => string = noop
+  onNodeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
+  onEdgeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
+  nodeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop,
+  edgeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop
 ) {
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
-  const height = 1500;
+  const height = 16000;
 
   const fakeRoot: CaseNode = {
     name: "Fake Root",
-    date: new Date("03/01/2020"),
+    date: new Date("2/01/2020"),
     type: "Flight",
-    children: cases.slice(0, 20),
+    children: cases,
     id: "blalbalb",
   };
 
+  // for (const c of cases) {
+  //   console.log("im as", c.id);
+  //   d3.hierarchy(c, ({ children }) => children);
+  //   console.log("done", c.id);
+  // }
+
   //  assigns the data to a hierarchy using parent-child relationships
   let nodesInitial = d3.hierarchy(fakeRoot, ({ children }) => children);
+
   // let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
   // console.log(nodesInitial, nodesInitial1);
 
-  // debugger;
-
-  const width = nodesInitial.height * 200;
+  const width = nodesInitial.height * 400;
 
   const treemap = d3.tree().size([height - 90, width]);
 
@@ -127,9 +139,10 @@ export function runD3StuffSecondIteration(
   link
     .append("path")
     .on("mouseover", function (d) {
+      onEdgeHover(d.data, d.parent?.data);
       div.transition().duration(200).style("opacity", 0.9);
       div
-        .html(onEdgeHover(d.data, d.parent?.data))
+        .html(edgeHoverTooltip(d.data, d.parent?.data))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
@@ -138,7 +151,7 @@ export function runD3StuffSecondIteration(
     })
     .attr("marker-end", "url(#arrow)")
     .attr("id", (d) => "path" + d.data.id)
-    .attr("class", styles.link)
+    .attr("class", (d) => classnames(styles.link, `level-${d.depth}`))
     .attr("d", (d) => {
       const calcY = (item: d3.HierarchyPointNode<unknown> | null) =>
         timeScale(parseDate(item.data.date)) - margin.left;
@@ -204,9 +217,10 @@ export function runD3StuffSecondIteration(
     .enter()
     .append("g")
     .on("mouseover", function (d) {
+      onNodeHover(d.data, d.parent?.data);
       div.transition().duration(200).style("opacity", 0.9);
       div
-        .html(onNodeHover(d.data, d.parent?.data))
+        .html(nodeHoverTooltip(d.data, d.parent?.data))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
@@ -215,6 +229,7 @@ export function runD3StuffSecondIteration(
     })
     .attr("class", function (d) {
       return classnames(
+        `level-${d.depth}`,
         styles.node,
         styles[d.data.type],
         styles[d.data.gender],

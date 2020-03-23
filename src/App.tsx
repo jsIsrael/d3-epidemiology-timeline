@@ -5,13 +5,13 @@ import { Graph as GraphOld } from "./Graph/graphOld";
 import { CaseNode } from "./listToGraph/interfaces";
 
 function App() {
-  const onEdgeHover = (node: CaseNode, parent?: CaseNode) =>
+  const edgeHoverTooltip = (node: CaseNode, parent?: CaseNode) =>
     `${parent?.name} -> ${node.name}`;
   return (
     <div>
-      <Graph onEdgeHover={onEdgeHover} />
+      <Graph edgeHoverTooltip={edgeHoverTooltip} />
       <hr />
-      <GraphOld />
+      {/* <GraphOld /> */}
     </div>
   );
 }
