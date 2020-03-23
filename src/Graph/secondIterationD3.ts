@@ -48,19 +48,24 @@ const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges).filter((n) => {
 
 const removeBadPatientsOrFlightsIds = new Set([107341, 107881, 107975, 107924]);
 
-const cases = toCaseNodeTree(g)
-  .filter((n) => n.children !== undefined)
+const casesBefore = toCaseNodeTree(g)
+  // .filter((n) => n.children !== undefined)
   .filter((n) => !removeBadPatientsOrFlightsIds.has(n.id));
 
 // let lama = treeData;
 
 export function runD3StuffSecondIteration(
+  showOrphans: boolean,
   container: HTMLDivElement,
   onNodeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
   onEdgeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
   nodeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop,
   edgeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop
 ) {
+  const cases = showOrphans
+    ? casesBefore
+    : casesBefore.filter((n) => n.children !== undefined);
+
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);
 
