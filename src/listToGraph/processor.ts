@@ -44,7 +44,7 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
         return {
           id: n.id,
           type: "Patiant",
-          name: `${n.name}-${n.id}`,
+          name: `${n.name}`,
           date: n.firstPositiveResultDate,
           gender: n.gender,
           status: n.status,

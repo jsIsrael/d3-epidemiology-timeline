@@ -6,7 +6,7 @@ import { CaseNode } from "./listToGraph/interfaces";
 
 function App() {
   const edgeHoverTooltip = (node: CaseNode, parent?: CaseNode) =>
-    `${parent?.name} -> ${node.name}`;
+    `${parent?.name} -> ${node.name}(id:${node.id})`;
   return (
     <div>
       <Graph edgeHoverTooltip={edgeHoverTooltip} />

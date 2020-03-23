@@ -15,7 +15,35 @@ import rawEdges from "../listToGraph/edges.json";
 
 const noop = () => {};
 
-const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges);
+function isValidDate(d: Date | undefined | null) {
+  if (d === undefined || d === null) {
+    return false;
+  }
+
+  if (d.getTime() === 0) {
+    return false;
+  }
+
+  return true;
+}
+
+const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges).filter((n) => {
+  if (n.type === "Patient" && !isValidDate(n.firstPositiveResultDate)) {
+    return false;
+  }
+
+  if (n.type === "Flight" && !isValidDate(n.date)) {
+    return false;
+  }
+
+  return true;
+});
+
+console.log({
+  g,
+  a: buildGraph(rawNodes, cleanGraph(rawEdges).edges),
+});
+
 // const g = buildGraph(rawNodes, rawEdges);
 
 const removeBadPatientsOrFlightsIds = new Set([107341, 107881, 107975, 107924]);
@@ -38,7 +66,7 @@ export function runD3StuffSecondIteration(
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
-  const height = 16000;
+  const height = 25000;
 
   const fakeRoot: CaseNode = {
     name: "Fake Root",

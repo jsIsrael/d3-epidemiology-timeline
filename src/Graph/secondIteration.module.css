@@ -1,3 +1,7 @@
+[transform*="NaN"] {
+  display: none;
+}
+
 .node circle,
 .node rect {
   fill: #fff;
