@@ -48,6 +48,10 @@
   font: 12px sans-serif;
 }
 
+.node:global(.level-0) {
+  display: none;
+}
+
 .node--internal text {
   text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
@@ -68,6 +72,10 @@
   stroke: #ccc;
   stroke-width: 2px;
   transition: all 0.3s ease;
+}
+
+.link:global(.level-1) {
+  display: none;
 }
 
 .arrow {

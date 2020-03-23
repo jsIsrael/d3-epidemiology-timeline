@@ -190,7 +190,7 @@ function parseFlightDetails(rawName: string) {
   }
 
   return {
-    name: rawName.replace(r[1], ""),
+    name: rawName.replace("-" + r[1], ""),
     date: parseAdHocDate(r[1]),
   };
 }

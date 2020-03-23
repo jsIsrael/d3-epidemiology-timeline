@@ -28,8 +28,10 @@ const cases = toCaseNodeTree(g)
 
 export function runD3StuffSecondIteration(
   container: HTMLDivElement,
-  onNodeHover: (node: CaseNode, parent?: CaseNode) => string = noop,
-  onEdgeHover: (node: CaseNode, parent?: CaseNode) => string = noop
+  onNodeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
+  onEdgeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
+  nodeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop,
+  edgeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop
 ) {
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);
@@ -137,9 +139,10 @@ export function runD3StuffSecondIteration(
   link
     .append("path")
     .on("mouseover", function (d) {
+      onEdgeHover(d.data, d.parent?.data);
       div.transition().duration(200).style("opacity", 0.9);
       div
-        .html(onEdgeHover(d.data, d.parent?.data))
+        .html(edgeHoverTooltip(d.data, d.parent?.data))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
@@ -148,7 +151,7 @@ export function runD3StuffSecondIteration(
     })
     .attr("marker-end", "url(#arrow)")
     .attr("id", (d) => "path" + d.data.id)
-    .attr("class", styles.link)
+    .attr("class", (d) => classnames(styles.link, `level-${d.depth}`))
     .attr("d", (d) => {
       const calcY = (item: d3.HierarchyPointNode<unknown> | null) =>
         timeScale(parseDate(item.data.date)) - margin.left;
@@ -214,9 +217,10 @@ export function runD3StuffSecondIteration(
     .enter()
     .append("g")
     .on("mouseover", function (d) {
+      onNodeHover(d.data, d.parent?.data);
       div.transition().duration(200).style("opacity", 0.9);
       div
-        .html(onNodeHover(d.data, d.parent?.data))
+        .html(nodeHoverTooltip(d.data, d.parent?.data))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
@@ -225,6 +229,7 @@ export function runD3StuffSecondIteration(
     })
     .attr("class", function (d) {
       return classnames(
+        `level-${d.depth}`,
         styles.node,
         styles[d.data.type],
         styles[d.data.gender],
