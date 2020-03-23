@@ -30,6 +30,18 @@ export function Graph({
         nodeHoverTooltip,
         edgeHoverTooltip
       );
+
+      try {
+        window.requestAnimationFrame(() => {
+          document.querySelector(`.id-107945`)!.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "center",
+          });
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     return destroy;

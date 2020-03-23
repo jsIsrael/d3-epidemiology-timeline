@@ -39,10 +39,10 @@ const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges).filter((n) => {
   return true;
 });
 
-console.log({
-  g,
-  a: buildGraph(rawNodes, cleanGraph(rawEdges).edges),
-});
+// console.log({
+//   g,
+//   a: buildGraph(rawNodes, cleanGraph(rawEdges).edges),
+// });
 
 // const g = buildGraph(rawNodes, rawEdges);
 
@@ -257,6 +257,7 @@ export function runD3StuffSecondIteration(
     })
     .attr("class", function (d) {
       return classnames(
+        `id-${d.data.id}`,
         `level-${d.depth}`,
         styles.node,
         styles[d.data.type],
