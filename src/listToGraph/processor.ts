@@ -1,6 +1,5 @@
 import {
   RawNode,
-  RawEdge,
   ProcessedNode,
   RawNodeFlight,
   ProcessedNodeFlight,
@@ -9,6 +8,7 @@ import {
   RawNodePatient,
   ProcessedNodePatient,
   CaseNode,
+  RawEdgeV2,
 } from "./interfaces";
 import { assertNoneNull, parseAdHocDate } from "../utils";
 
@@ -82,23 +82,27 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
   });
 }
 
-export function buildGraph(rawNodes: RawNode[], rawEdges: RawEdge[]) {
+export function buildGraph(rawNodes: RawNode[], rawEdges: RawEdgeV2[]) {
   const rawNodesAsArray = rawNodes;
   const nodesMap = new Map(
     rawNodesAsArray.map((n) => [n.id, rawNodeToNode(n)])
   );
 
   for (const edge of rawEdges) {
-    if (edge.from.id === edge.to.id) {
+    if (edge.start_node === edge.end_node) {
       console.warn("Direct circularity detected", edge);
       continue;
     }
 
-    const parentNode = nodesMap.get(edge.from.id);
-    const childNode = nodesMap.get(edge.to.id);
+    const parentNode = nodesMap.get(edge.start_node);
+    const childNode = nodesMap.get(edge.end_node);
 
-    assertNoneNull(parentNode);
-    assertNoneNull(childNode);
+    try {
+      assertNoneNull(parentNode);
+      assertNoneNull(childNode);
+    } catch (e) {
+      continue;
+    }
 
     parentNode.children.push(childNode.id);
 

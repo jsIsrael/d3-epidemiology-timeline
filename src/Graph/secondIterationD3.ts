@@ -4,10 +4,9 @@ import heTimeLocale from "./locale/he-IL.json";
 import styles from "./secondIteration.module.css";
 import classnames from "classnames";
 import { events2 } from "./data2ndIteration";
-import { CaseNode, RawNode, RawEdge } from "../listToGraph/interfaces";
+import { CaseNode, RawNode, RawEdgeV2 } from "../listToGraph/interfaces";
 
 import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
-import { cleanGraph } from "../listToGraph/clean-graph";
 
 const noop = () => {};
 
@@ -17,7 +16,7 @@ const noop2 = () => {
 
 export function prepareCaseNodes(
   rawNodes: RawNode[],
-  rawEdges: RawEdge[],
+  rawEdges: RawEdgeV2[],
   showOrphans: boolean
 ) {
   function isValidDate(d: Date | undefined | null) {
@@ -32,7 +31,7 @@ export function prepareCaseNodes(
     return true;
   }
 
-  const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges).filter((n) => {
+  const g = buildGraph(rawNodes, rawEdges).filter((n) => {
     if (n.type === "Patient" && !isValidDate(n.firstPositiveTestDate)) {
       return false;
     }

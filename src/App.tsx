@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./App.module.css";
 import { Graph } from "./Graph/graph";
-import { CaseNode, RawEdge, RawNode } from "./listToGraph/interfaces";
+import { CaseNode, RawNode, RawEdgeV2 } from "./listToGraph/interfaces";
 import rawNodes from "./listToGraph/nodes_new.json";
 import rawEdges from "./listToGraph/edges_new.json";
 import { useFetch } from "react-async";
@@ -21,7 +21,7 @@ async function readJSONFile<T = any>(file: File): Promise<T> {
 function App() {
   const [backendBaseURL, setBackendURL] = React.useState<string>("");
   const [nodesFromFile, setNodesFromFile] = React.useState<RawNode[]>();
-  const [edgesFromFile, setEdgesFromFile] = React.useState<RawEdge[]>();
+  const [edgesFromFile, setEdgesFromFile] = React.useState<RawEdgeV2[]>();
   const backendBaseURLDebounced = useDebounce(backendBaseURL, 300);
 
   const { data: graphNodesFromServer } = useFetch<RawNode[]>(
@@ -29,7 +29,7 @@ function App() {
     {},
     { json: true }
   );
-  const { data: graphEdgesFromServer } = useFetch<RawEdge[]>(
+  const { data: graphEdgesFromServer } = useFetch<RawEdgeV2[]>(
     `${backendBaseURLDebounced}/api/graph_edges`,
     {},
     { json: true }
@@ -79,7 +79,7 @@ function App() {
   ]);
 
   const caseNodes = React.useMemo(
-    () => prepareCaseNodes(dataSetToUse.nodes, dataSetToUse.edges, true),
+    () => prepareCaseNodes(dataSetToUse.nodes, dataSetToUse.edges, false),
     [dataSetToUse.edges, dataSetToUse.nodes]
   );
 
