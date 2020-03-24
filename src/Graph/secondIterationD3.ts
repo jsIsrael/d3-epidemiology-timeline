@@ -51,11 +51,11 @@ export function prepareCaseNodes(
 
   // const g = buildGraph(rawNodes, rawEdges);
 
-  const removeBadPatientsOrFlightsIds = new Set([
-    107341,
-    107881,
-    107975,
-    107924,
+  const removeBadPatientsOrFlightsIds = new Set<number>([
+    // 107341,
+    // 107881,
+    // 107975,
+    // 107924,
   ]);
 
   const casesBefore = toCaseNodeTree(g)
