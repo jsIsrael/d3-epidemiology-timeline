@@ -112,7 +112,7 @@ export function runD3StuffSecondIteration(
   const innerWidth = nodesInitial.height * 200;
   const innerHeight = 16000;
 
-  const treemap = d3.tree().size([innerHeight - 90, innerWidth]);
+  const treemap = d3.tree<CaseNode>().size([innerHeight - 90, innerWidth]);
 
   // maps the node data to the tree layout
   const nodes = treemap(nodesInitial);
@@ -120,10 +120,14 @@ export function runD3StuffSecondIteration(
   const parseDate = (date: string | Date) =>
     date instanceof Date ? date : parse(date, "dd/MM/yyyy", 0);
 
-  const startDate = nodes.descendants().reduce((minDate, { data }: any) => {
-    // @ts-ignore
-    return minDate > parseDate(data.date) ? parseDate(data.date) : minDate;
-  }, new Date());
+  const startDate = [
+    ...nodes.descendants().map(({ data }) => data),
+    ...events2,
+  ].reduce(
+    (minDate: Date, { date }: { date: string | Date }) =>
+      minDate > parseDate(date) ? parseDate(date) : minDate,
+    new Date()
+  );
 
   const timeScale = d3
     .scaleTime()
