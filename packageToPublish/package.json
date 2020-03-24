@@ -1,0 +1,9 @@
+{
+  "name": "@bnaya/try-epidemiology-timeline",
+  "version": "0.0.1",
+  "dependencies": {},
+  "main": "./index",
+  "peerDependencies": {
+    "react": "^16.13.1"
+  }
+}

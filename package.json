@@ -25,7 +25,7 @@
     "start": "react-scripts start",
     "start-hmr": "craco start",
     "build": "react-scripts build",
-    "build-craco": "rm -fr dist && craco build",
+    "build-craco-lib": "git clean -fx packageToPublish && library=1 craco build && yarn tsc -p tsconfig.library.json && git checkout packageToPublish",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dedup": "yarn-deduplicate -s fewer yarn.lock",

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "declaration": true,
+    "outDir": "./packageToPublish"
+  },
+  "include": [],
+  "exclude": ["src"],
+  "files": ["./src/react-app-env.d.ts", "./src/library.ts"]
+}
