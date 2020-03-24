@@ -99,11 +99,11 @@ export function runD3StuffSecondIteration(
   let nodesInitial = d3.hierarchy(fakeRoot, ({ children }) => children);
 
   const innerWidth = nodesInitial.height * 700;
-  const innerHeight = 20000;
+  const innerHeight = 50000;
 
   const treemap = d3
     .tree<CaseNode>()
-    .size([innerHeight - 90, innerWidth])
+    .size([innerHeight, innerWidth])
     .nodeSize([50, 100]);
 
   // maps the node data to the tree layout
@@ -136,7 +136,7 @@ export function runD3StuffSecondIteration(
     .zoom()
     .scaleExtent([0.1, 40])
     .translateExtent([
-      [-100, -100],
+      [-100, -innerHeight],
       [innerWidth + 100, innerHeight + 100],
     ])
     .on("zoom", () => {
@@ -149,7 +149,12 @@ export function runD3StuffSecondIteration(
           }) scale(${d3.event.transform.k})`
         );
 
-      g.attr("transform", d3.event.transform);
+      g.attr(
+        "transform",
+        `translate(${d3.event.transform.x - 80 * d3.event.transform.k}, ${
+          d3.event.transform.y - 300 * d3.event.transform.k
+        }) scale(${d3.event.transform.k})`
+      );
     });
 
   // append the svg object to the body of the page
