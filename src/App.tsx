@@ -13,10 +13,16 @@ if (window.location.search.includes("specialOps")) {
   window.localStorage.setItem("specialOps", "true");
 }
 
+async function readJSONFile<T = any>(file: File): Promise<T> {
+  return JSON.parse(await file.text());
+}
+
 function App() {
   const [backendBaseURL, setBackendURL] = React.useState<string>("");
-  const [nodesFile, setNodesFile] = React.useState<File>();
-  const [edgesFile, setEdgesFile] = React.useState<File>();
+  const [nodesFromFile, setNodesFromFile] = React.useState<{
+    [x: string]: RawNode;
+  }>();
+  const [edgesFromFile, setEdgesFromFile] = React.useState<RawEdge[]>();
   const backendBaseURLDebounced = useDebounce(backendBaseURL, 300);
 
   const { data: graphNodesFromServer } = useFetch<{ [x: string]: RawNode }>(
@@ -46,13 +52,38 @@ function App() {
     </div>`;
   }, []);
 
-  const useFromServer = graphNodesFromServer && graphEdgesFromServer;
+  const dataSetToUse = React.useMemo(() => {
+    if (graphNodesFromServer && graphEdgesFromServer) {
+      return {
+        from: "server",
+        nodes: graphNodesFromServer,
+        edges: graphEdgesFromServer,
+      };
+    } else if (nodesFromFile && edgesFromFile) {
+      return {
+        from: "files",
+        nodes: nodesFromFile,
+        edges: edgesFromFile,
+      };
+    }
+
+    return {
+      from: "bundled",
+      nodes: rawNodes,
+      edges: rawEdges,
+    } as any;
+  }, [
+    edgesFromFile,
+    graphEdgesFromServer,
+    graphNodesFromServer,
+    nodesFromFile,
+  ]);
 
   return (
     <div className={styles.wrapper}>
       <Graph
-        rawEdges={useFromServer ? graphNodesFromServer : (rawEdges as any)}
-        rawNodes={useFromServer ? graphEdgesFromServer : (rawNodes as any)}
+        rawEdges={dataSetToUse.edges}
+        rawNodes={dataSetToUse.nodes}
         nodeToStartWith={107991}
         edgeHoverTooltip={edgeHoverTooltip}
         nodeHoverTooltip={nodeHoverTooltip}
@@ -69,6 +100,8 @@ function App() {
           backgroundColor: "red",
         }}
       >
+        Data from: {dataSetToUse.from}
+        <br />
         <input
           type="text"
           placeholder="Backend Url"
@@ -80,14 +113,18 @@ function App() {
         <input
           type="file"
           name="nodes"
-          onChange={(e) => setNodesFile(e.target.files![0])}
+          onChange={(e) => {
+            readJSONFile(e.target.files![0]).then(setNodesFromFile);
+          }}
         />
         <br />
         Edges:{" "}
         <input
           type="file"
           name="edges"
-          onChange={(e) => setEdgesFile(e.target.files![0])}
+          onChange={(e) => {
+            readJSONFile(e.target.files![0]).then(setEdgesFromFile);
+          }}
         />
       </div>
     </div>
