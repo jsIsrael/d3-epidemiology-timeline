@@ -7,17 +7,18 @@ module.exports = {
     pluginOptions,
     context: { env, paths },
   }) => {
-    console.log({ env });
+    // console.log({ env, paths });
+    paths.appBuild = path.resolve(__dirname, "./packageToPublish");
     if (env === "production" && process.env.library) {
       webpackConfig.entry = [path.resolve(__dirname, "./src/library.ts")];
-      webpackConfig.output.path = path.resolve(__dirname, "./dist");
+      webpackConfig.output.path = path.resolve(__dirname, "./packageToPublish");
       webpackConfig.output.filename = `[name].js`;
       webpackConfig.externals = {
         react: "react",
       };
 
       webpackConfig.optimization = {
-        minimize: true,
+        minimize: false,
         splitChunks: { chunks: "all", name: false, minSize: Math.pow(10, 10) },
         // splitChunks: undefined,
       };
@@ -35,7 +36,7 @@ module.exports = {
         pluginsToKeep.has(p.constructor.name)
       );
 
-      console.log(webpackConfig);
+      // console.log(webpackConfig);
       // return;
     }
 
