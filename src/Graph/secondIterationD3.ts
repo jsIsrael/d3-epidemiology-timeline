@@ -16,7 +16,7 @@ const noop2 = () => {
 };
 
 export function prepareCaseNodes(
-  rawNodes: { [x: string]: RawNode },
+  rawNodes: RawNode[],
   rawEdges: RawEdge[],
   showOrphans: boolean
 ) {
@@ -33,7 +33,7 @@ export function prepareCaseNodes(
   }
 
   const g = buildGraph(rawNodes, cleanGraph(rawEdges).edges).filter((n) => {
-    if (n.type === "Patient" && !isValidDate(n.firstPositiveResultDate)) {
+    if (n.type === "Patient" && !isValidDate(n.firstPositiveTestDate)) {
       return false;
     }
 

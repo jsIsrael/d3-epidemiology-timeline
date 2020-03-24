@@ -38,7 +38,7 @@ export interface ProcessedNodePatient extends WithParentsAndChildren {
   age: number;
   city: string;
   dsid: string;
-  firstPositiveResultDate: Date;
+  firstPositiveTestDate: Date;
   gender: "male" | "female";
   infectedLevel: InfectedLevel;
   infectedSource: string;
@@ -103,16 +103,14 @@ export interface RawNodeFlight {
   // 106649
   id: number;
   labels: ["Flight"];
-  properties: {
-    /**
-     * "D454-05/03/2020" VS453-07/03/2020
-     */
-    name: string;
-    /**
-     * "244bc793880e4348b3dfc80f667ccc29"
-     */
-    uid: string;
-  };
+  /**
+   * "D454-05/03/2020" VS453-07/03/2020
+   */
+  name: string;
+  /**
+   * "244bc793880e4348b3dfc80f667ccc29"
+   */
+  uid: string;
 }
 
 export interface RawNodePatient {
@@ -122,35 +120,32 @@ export interface RawNodePatient {
    */
   id: number;
   labels: ["Patient"];
-  properties: {
-    age: number;
-    //  קריית יערים
-    city: string;
-    // "8E07601C-2565-EA11-9154-005056846626"
-    dsid: string;
-    // 13/03/2020
-    firstPositiveResultDate: string;
-    // זכר/נקבה
-    gender: NodeGender;
-    infectedLevel: InfectedLevel;
-    infectedSource: string;
-    name: string;
-    status: Status;
-    // "d3d7388ea4ca498183bbd137859836c2"
-    uid: string;
-  };
+  age: number;
+  //  קריית יערים
+  city: string;
+  // "8E07601C-2565-EA11-9154-005056846626"
+  dsid: string;
+  // 13/03/2020
+  firstPositiveTestDate: string;
+  // firstPositiveTestDate: string;
+  // זכר/נקבה
+  gender: NodeGender;
+  infectedLevel: InfectedLevel;
+  infectedSource: string;
+  name: string;
+  status: Status;
+  // "d3d7388ea4ca498183bbd137859836c2"
+  uid: string;
 }
 
 export interface RawNodeCountry {
   // 106649
   id: number;
   labels: ["Country"];
-  properties: {
-    // צרפת
-    name: string;
-    // "908ba59588d745ae8e7cce63a21c3530";
-    uid: string;
-  };
+  // צרפת
+  name: string;
+  // "908ba59588d745ae8e7cce63a21c3530";
+  uid: string;
 }
 
 export interface RawEdge {}

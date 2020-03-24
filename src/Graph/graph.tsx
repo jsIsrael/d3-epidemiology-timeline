@@ -14,7 +14,7 @@ interface Props {
   onEdgeHover?: (node: CaseNode, parent?: CaseNode) => void;
   nodeHoverTooltip?: (node: CaseNode, parent?: CaseNode) => string;
   edgeHoverTooltip?: (node: CaseNode, parent?: CaseNode) => string;
-  rawNodes: { [x: string]: RawNode };
+  rawNodes: RawNode[];
   rawEdges: RawEdge[];
   nodeToStartWith: number;
 }
@@ -28,20 +28,18 @@ export function Graph({
   rawEdges,
   nodeToStartWith,
 }: Props) {
-  const rawNodesAsArray = React.useMemo(() => Object.values(rawNodes), [
-    rawNodes,
-  ]);
+  const rawNodesAsArray = rawNodes;
 
   const options = React.useMemo(
     () =>
       rawNodesAsArray
         // @ts-ignore
-        .filter((n) => n.properties?.name)
+        .filter((n) => n.name)
         .filter((n) => n.labels[0] !== "Country")
         .map((n) => ({
           value: n.id,
           // @ts-ignore
-          label: n.properties?.name,
+          label: n.name,
         })),
     [rawNodesAsArray]
   );
@@ -52,7 +50,7 @@ export function Graph({
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
   );
-  const [showOrphans, setShowOrphans] = React.useState(false);
+  const [showOrphans, setShowOrphans] = React.useState(true);
 
   const selectedNodeDebounced = useDebounce(selectedNode, 1000);
 
