@@ -20,6 +20,8 @@ const options = nodes
 
 const nodeToStartWith = 107991;
 
+let focusFn: any = () => {};
+
 interface Props {
   onNodeHover?: (node: CaseNode, parent?: CaseNode) => void;
   onEdgeHover?: (node: CaseNode, parent?: CaseNode) => void;
@@ -42,10 +44,10 @@ export function Graph({
   const selectedNodeDebounced = useDebounce(selectedNode, 1000);
 
   React.useEffect(() => {
-    let destroy = () => {};
+    let destroyFn = () => {};
 
     if (containerRef.current) {
-      destroy = runD3StuffSecondIteration(
+      const { destroy, focus } = runD3StuffSecondIteration(
         showOrphans,
         containerRef.current,
         onNodeHover,
@@ -53,9 +55,12 @@ export function Graph({
         nodeHoverTooltip,
         edgeHoverTooltip
       );
+
+      focusFn = focus;
+      destroyFn = destroy;
     }
 
-    return destroy;
+    return destroyFn;
   }, [
     onNodeHover,
     onEdgeHover,
@@ -72,11 +77,7 @@ export function Graph({
     window.requestAnimationFrame(() => {
       const el = document.querySelector(`.id-${selectedNodeDebounced.value}`);
       if (el) {
-        el.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center",
-        });
+        focusFn && focusFn(el);
       }
     });
   }, [selectedNodeDebounced]);

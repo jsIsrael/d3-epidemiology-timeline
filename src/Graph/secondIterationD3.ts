@@ -71,7 +71,8 @@ export function runD3StuffSecondIteration(
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
-  const height = 30000;
+
+  const height = document.documentElement.clientHeight;
 
   const fakeRoot: CaseNode = {
     name: "Fake Root",
@@ -93,9 +94,13 @@ export function runD3StuffSecondIteration(
   // let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
   // console.log(nodesInitial, nodesInitial1);
 
-  const width = nodesInitial.height * 400;
+  // const width = nodesInitial.height * 400;
 
-  const treemap = d3.tree().size([height - 90, width]);
+  const width = document.documentElement.clientWidth;
+  const innerWidth = nodesInitial.height * 200;
+  const innerHeight = 16000;
+
+  const treemap = d3.tree().size([innerHeight - 90, innerWidth]);
 
   // maps the node data to the tree layout
   const nodes = treemap(nodesInitial);
@@ -110,7 +115,7 @@ export function runD3StuffSecondIteration(
   const timeScale = d3
     .scaleTime()
     .domain([startDate, new Date()])
-    .range([margin.left, width + margin.left]);
+    .range([margin.left, innerWidth + margin.left]);
 
   const xAxis = d3
     .axisBottom(timeScale)
@@ -119,12 +124,23 @@ export function runD3StuffSecondIteration(
 
   const zoom = d3
     .zoom()
-    .scaleExtent([1, 40])
+    .scaleExtent([0.1, 40])
     .translateExtent([
       [-100, -100],
-      [width + 90, height + 100],
+      [innerWidth + 90, innerHeight + 100],
     ])
-    .on("zoom", () => svg.attr("transform", d3.event.transform));
+    .on("zoom", () => {
+      svg
+        .select(".x.axis")
+        .attr(
+          "transform",
+          `translate(${d3.event.transform.x}, ${
+            height - 100 * d3.event.transform.k
+          }) scale(${d3.event.transform.k})`
+        );
+
+      g.attr("transform", d3.event.transform);
+    });
 
   // append the svg object to the body of the page
   // appends a 'group' element to 'svg'
@@ -132,8 +148,9 @@ export function runD3StuffSecondIteration(
   const svg = d3
     .select(container)
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .call(zoom)
+    .attr("width", width)
+    .attr("height", height);
   // this kind of zoom is disabled for now
   // .call(zoom);
 
@@ -149,17 +166,18 @@ export function runD3StuffSecondIteration(
     .attr("orient", "auto-start-reverse")
     .append("path")
     .attr("class", styles.arrow)
-
     .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
-  let g = svg
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  let g = svg.append("g").attr("id", "innerGroup");
+  // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   svg
     .append("g")
-    .call(xAxis)
-    .attr("transform", "translate(0," + (height - 30) + ")");
+    .attr("class", "x axis")
+    // .attr("transform", "translate(0," + height + ")")
+    // .style("position", "fixed")
+    .attr("transform", "translate(0," + (height - 30) + ")")
+    .call(xAxis);
 
   const link = g.selectAll(".link").data(nodes.descendants().slice(1)).enter();
 
@@ -343,13 +361,12 @@ export function runD3StuffSecondIteration(
       return d.data.name;
     });
 
+  const events = svg.select(".x.axis");
+
   events2.forEach(({ date, description }) => {
-    const g = svg
+    const g = events
       .append("g")
-      .attr(
-        "transform",
-        "translate(" + timeScale(date) + "," + (height + 25) + ")"
-      )
+      .attr("transform", "translate(" + timeScale(date) + "," + 50 + ")")
       .attr("class", styles.event)
       .on("mouseover", function (d) {
         div.transition().duration(200).style("opacity", 0.9);
@@ -364,15 +381,49 @@ export function runD3StuffSecondIteration(
 
     g.append("circle").attr("r", 10);
 
-    g.append("text").text(description.substr(0, 10) + "...");
+    g.append("text")
+      .text(description.substr(0, 10) + "...")
+      .attr("fill", "black");
 
     g.append("line")
       .attr("y1", 0)
-      .attr("y2", height - 25)
-      .attr("transform", "translate(0," + (-height - 20) + ")");
+      .attr("y2", innerHeight - 25)
+      .attr("transform", "translate(0," + -innerHeight + ")");
   });
 
-  return () => {
-    svg.remove();
+  return {
+    destroy: () => {
+      svg.remove();
+    },
+    focus: (el) => {
+      const scale = d3?.event?.transform?.k || 1;
+      // svg
+      //   .select(".x.axis")
+      //   .attr(
+      //     "transform",
+      //     `translate(${x}, ${height - 100 * scale}) scale(${scale})`
+      //   );
+
+      // g.attr("transform", `translate(${x}, ${y}) scale(${scale})`);
+
+      // const [x, y] = data[Math.floor(Math.random() * data.length)];
+      svg
+        .transition()
+        .duration(0)
+        .call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(scale))
+        .on("end", () => {
+          const rect = el.getBoundingClientRect();
+          svg
+            .transition()
+            .duration(1000)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity.translate(
+                -rect.x + width / 2,
+                -rect.y + height / 2
+              )
+            );
+        });
+    },
   };
 }
