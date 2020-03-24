@@ -132,7 +132,7 @@ export function runD3StuffSecondIteration(
   const timeScale = d3
     .scaleTime()
     .domain([startDate, new Date()])
-    .range([margin.left, innerWidth + margin.left]);
+    .range([0, innerWidth]);
 
   const xAxis = d3
     .axisBottom(timeScale)
@@ -145,14 +145,14 @@ export function runD3StuffSecondIteration(
     .scaleExtent([0.1, 40])
     .translateExtent([
       [-100, -100],
-      [innerWidth + 90, innerHeight + 100],
+      [innerWidth + 100, innerHeight + 100],
     ])
     .on("zoom", () => {
       svg
         .select(".x.axis")
         .attr(
           "transform",
-          `translate(${d3.event.transform.x}, ${
+          `translate(${d3.event.transform.x - 80 * d3.event.transform.k}, ${
             height - 100 * d3.event.transform.k
           }) scale(${d3.event.transform.k})`
         );
@@ -188,13 +188,10 @@ export function runD3StuffSecondIteration(
     .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
   let g = svg.append("g").attr("id", "innerGroup");
-  // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   svg
     .append("g")
     .attr("class", "x axis")
-    // .attr("transform", "translate(0," + height + ")")
-    // .style("position", "fixed")
     .attr("transform", "translate(0," + (height - 30) + ")")
     .call(xAxis);
 
@@ -449,16 +446,7 @@ export function runD3StuffSecondIteration(
     },
     focus: (el: { getBoundingClientRect: () => any }) => {
       const scale = d3?.event?.transform?.k || 1;
-      // svg
-      //   .select(".x.axis")
-      //   .attr(
-      //     "transform",
-      //     `translate(${x}, ${height - 100 * scale}) scale(${scale})`
-      //   );
 
-      // g.attr("transform", `translate(${x}, ${y}) scale(${scale})`);
-
-      // const [x, y] = data[Math.floor(Math.random() * data.length)];
       svg
         .transition()
         .duration(0)
