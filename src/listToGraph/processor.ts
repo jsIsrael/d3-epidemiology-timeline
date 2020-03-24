@@ -54,7 +54,7 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
           id: n.id,
           type: "Patiant",
           name: `${n.name}`,
-          date: n.firstPositiveResultDate,
+          date: n.firstPositiveTestDate,
           gender: n.gender,
           status: n.status,
         };
@@ -82,11 +82,8 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
   });
 }
 
-export function buildGraph(
-  rawNodes: { [x: string]: RawNode },
-  rawEdges: RawEdge[]
-) {
-  const rawNodesAsArray = Object.values(rawNodes);
+export function buildGraph(rawNodes: RawNode[], rawEdges: RawEdge[]) {
+  const rawNodesAsArray = rawNodes;
   const nodesMap = new Map(
     rawNodesAsArray.map((n) => [n.id, rawNodeToNode(n)])
   );
@@ -136,7 +133,7 @@ function rawNodeToNode(rawNode: RawNode): ProcessedNode {
 }
 
 function flightRawNodeToNode(node: RawNodeFlight): ProcessedNodeFlight {
-  let name = node.properties.name;
+  let name = node.name;
   if (!name) {
     console.warn("Flight Name missing:", node);
     name = "";
@@ -145,7 +142,7 @@ function flightRawNodeToNode(node: RawNodeFlight): ProcessedNodeFlight {
 
   return {
     id: node.id,
-    uid: node.properties.uid,
+    uid: node.uid,
     name: p.name,
     type: "Flight",
     date: p.date,
@@ -159,8 +156,8 @@ function countryRawNodeToNode(node: RawNodeCountry): ProcessedNodeCountry {
   return {
     id: node.id,
     type: "Country",
-    name: node.properties.name,
-    uid: node.properties.uid,
+    name: node.name,
+    uid: node.uid,
     // raw: node,
     parents: [],
     children: [],
@@ -171,18 +168,16 @@ function patientRawNodeToNode(node: RawNodePatient): ProcessedNodePatient {
   return {
     type: "Patient",
     id: node.id,
-    uid: node.properties.uid,
-    name: node.properties.name,
-    firstPositiveResultDate: parseAdHocDate(
-      node.properties.firstPositiveResultDate
-    ),
-    age: node.properties.age,
-    dsid: node.properties.dsid,
-    infectedLevel: node.properties.infectedLevel,
-    infectedSource: node.properties.infectedSource,
-    city: node.properties.city,
-    gender: genderHebToEng(node.properties.gender),
-    status: statusHebToEng(node.properties.status),
+    uid: node.uid,
+    name: node.name,
+    firstPositiveTestDate: parseAdHocDate(node.firstPositiveTestDate),
+    age: node.age,
+    dsid: node.dsid,
+    infectedLevel: node.infectedLevel,
+    infectedSource: node.infectedSource,
+    city: node.city,
+    gender: genderHebToEng(node.gender),
+    status: statusHebToEng(node.status),
     children: [],
     parents: [],
     // raw: node,

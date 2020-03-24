@@ -2,8 +2,8 @@ import React from "react";
 import styles from "./App.module.css";
 import { Graph } from "./Graph/graph";
 import { CaseNode, RawEdge, RawNode } from "./listToGraph/interfaces";
-import rawNodes from "./listToGraph/nodes.json";
-import rawEdges from "./listToGraph/edges.json";
+import rawNodes from "./listToGraph/nodes_new.json";
+import rawEdges from "./listToGraph/edges_new.json";
 import { useFetch } from "react-async";
 import { useDebounce } from "./utils";
 
@@ -19,13 +19,11 @@ async function readJSONFile<T = any>(file: File): Promise<T> {
 
 function App() {
   const [backendBaseURL, setBackendURL] = React.useState<string>("");
-  const [nodesFromFile, setNodesFromFile] = React.useState<{
-    [x: string]: RawNode;
-  }>();
+  const [nodesFromFile, setNodesFromFile] = React.useState<RawNode[]>();
   const [edgesFromFile, setEdgesFromFile] = React.useState<RawEdge[]>();
   const backendBaseURLDebounced = useDebounce(backendBaseURL, 300);
 
-  const { data: graphNodesFromServer } = useFetch<{ [x: string]: RawNode }>(
+  const { data: graphNodesFromServer } = useFetch<RawNode[]>(
     `${backendBaseURLDebounced}/api/graph_nodes`,
     {},
     { json: true }
