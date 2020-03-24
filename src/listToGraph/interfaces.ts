@@ -1,3 +1,8 @@
+export interface Event {
+  description: string;
+  date: Date;
+}
+
 export interface CaseNode {
   name: string;
   id: number;

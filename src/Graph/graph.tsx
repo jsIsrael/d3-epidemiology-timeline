@@ -1,32 +1,21 @@
 import * as React from "react";
 // import { runD3Stuff } from "./runD3Stuff";
-import { runD3StuffSecondIteration } from "./secondIterationD3";
-import { Event } from "./data2ndIteration";
-import { CaseNode } from "../listToGraph/interfaces";
+import {
+  runD3StuffSecondIteration,
+  prepareCaseNodes,
+} from "./secondIterationD3";
+import { CaseNode, RawNode, RawEdge } from "../listToGraph/interfaces";
 import Select from "react-select";
-import rawNodes from "../listToGraph/nodes.json";
 import styles from "./secondIteration.module.css";
-const nodes = Object.values(rawNodes);
-
-const options = nodes
-  // @ts-ignore
-  .filter((n) => n.properties?.name)
-  .filter((n) => n.labels[0] !== "Country")
-  .map((n) => ({
-    value: n.id,
-    // @ts-ignore
-    label: n.properties?.name,
-  }));
-
-const nodeToStartWith = 107991;
-
-let focusFn: any = () => {};
 
 interface Props {
   onNodeHover?: (node: CaseNode, parent?: CaseNode) => void;
   onEdgeHover?: (node: CaseNode, parent?: CaseNode) => void;
   nodeHoverTooltip?: (node: CaseNode, parent?: CaseNode) => string;
   edgeHoverTooltip?: (node: CaseNode, parent?: CaseNode) => string;
+  rawNodes: { [x: string]: RawNode };
+  rawEdges: RawEdge[];
+  nodeToStartWith: number;
 }
 
 export function Graph({
@@ -34,7 +23,30 @@ export function Graph({
   onEdgeHover,
   nodeHoverTooltip,
   edgeHoverTooltip,
+  rawNodes,
+  rawEdges,
+  nodeToStartWith,
 }: Props) {
+  const rawNodesAsArray = React.useMemo(() => Object.values(rawNodes), [
+    rawNodes,
+  ]);
+
+  const options = React.useMemo(
+    () =>
+      rawNodesAsArray
+        // @ts-ignore
+        .filter((n) => n.properties?.name)
+        .filter((n) => n.labels[0] !== "Country")
+        .map((n) => ({
+          value: n.id,
+          // @ts-ignore
+          label: n.properties?.name,
+        })),
+    [rawNodesAsArray]
+  );
+
+  const focusFn = React.useRef((el: Element) => {});
+
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
@@ -43,20 +55,25 @@ export function Graph({
 
   const selectedNodeDebounced = useDebounce(selectedNode, 1000);
 
+  const caseNodes = React.useMemo(
+    () => prepareCaseNodes(rawNodes, rawEdges, showOrphans),
+    [rawEdges, rawNodes, showOrphans]
+  );
+
   React.useEffect(() => {
     let destroyFn = () => {};
 
     if (containerRef.current) {
       const { destroy, focus } = runD3StuffSecondIteration(
-        showOrphans,
         containerRef.current,
+        caseNodes,
         onNodeHover,
         onEdgeHover,
         nodeHoverTooltip,
         edgeHoverTooltip
       );
 
-      focusFn = focus;
+      focusFn.current = focus;
       destroyFn = destroy;
     }
 
@@ -67,6 +84,7 @@ export function Graph({
     nodeHoverTooltip,
     edgeHoverTooltip,
     showOrphans,
+    caseNodes,
   ]);
 
   React.useEffect(() => {
@@ -77,10 +95,10 @@ export function Graph({
     window.requestAnimationFrame(() => {
       const el = document.querySelector(`.id-${selectedNodeDebounced.value}`);
       if (el) {
-        focusFn && focusFn(el);
+        focusFn.current && focusFn.current(el);
       }
     });
-  }, [selectedNodeDebounced]);
+  }, [focusFn, selectedNodeDebounced]);
 
   return (
     <>
