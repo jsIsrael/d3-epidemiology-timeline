@@ -25,6 +25,7 @@
     "start": "react-scripts start",
     "start-hmr": "craco start",
     "build": "react-scripts build",
+    "build-craco": "rm -fr dist && craco build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dedup": "yarn-deduplicate -s fewer yarn.lock",
