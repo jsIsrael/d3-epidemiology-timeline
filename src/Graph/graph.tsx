@@ -5,7 +5,7 @@ import { Event } from "./data2ndIteration";
 import { CaseNode } from "../listToGraph/interfaces";
 import Select from "react-select";
 import rawNodes from "../listToGraph/nodes.json";
-
+import styles from "./secondIteration.module.css";
 const nodes = Object.values(rawNodes);
 
 const options = nodes
@@ -84,7 +84,7 @@ export function Graph({
 
   return (
     <>
-      <div ref={containerRef} />
+      <div ref={containerRef} className={styles.container} />
       <div
         style={{
           width: 300,

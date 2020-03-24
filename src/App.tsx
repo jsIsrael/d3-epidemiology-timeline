@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import styles from "./App.module.css";
 import { Graph } from "./Graph/graph";
 import { Graph as GraphOld } from "./Graph/graphOld";
 import { CaseNode } from "./listToGraph/interfaces";
@@ -8,7 +8,7 @@ function App() {
   const edgeHoverTooltip = (node: CaseNode, parent?: CaseNode) =>
     `${parent?.name} -> ${node.name}(id:${node.id})`;
   return (
-    <div>
+    <div className={styles.wrapper}>
       <Graph
         edgeHoverTooltip={edgeHoverTooltip}
         nodeHoverTooltip={(node, parent) => {
@@ -21,8 +21,6 @@ function App() {
           </div>`;
         }}
       />
-      <hr />
-      {/* <GraphOld /> */}
     </div>
   );
 }
