@@ -95,24 +95,16 @@ export function runD3StuffSecondIteration(
     id: 123123,
   };
 
-  // for (const c of cases) {
-  //   console.log("im as", c.id);
-  //   d3.hierarchy(c, ({ children }) => children);
-  //   console.log("done", c.id);
-  // }
-
   //  assigns the data to a hierarchy using parent-child relationships
   let nodesInitial = d3.hierarchy(fakeRoot, ({ children }) => children);
 
-  // let nodesInitial = d3.hierarchy(treeData, ({ children }) => children);
-  // console.log(nodesInitial, nodesInitial1);
+  const innerWidth = nodesInitial.height * 700;
+  const innerHeight = 20000;
 
-  // const width = nodesInitial.height * 400;
-
-  const innerWidth = nodesInitial.height * 200;
-  const innerHeight = 16000;
-
-  const treemap = d3.tree<CaseNode>().size([innerHeight - 90, innerWidth]);
+  const treemap = d3
+    .tree<CaseNode>()
+    .size([innerHeight - 90, innerWidth])
+    .nodeSize([50, 100]);
 
   // maps the node data to the tree layout
   const nodes = treemap(nodesInitial);
@@ -170,8 +162,6 @@ export function runD3StuffSecondIteration(
     .call(zoom)
     .attr("width", width)
     .attr("height", height);
-  // this kind of zoom is disabled for now
-  // .call(zoom);
 
   svg
     .append("defs")
@@ -180,8 +170,8 @@ export function runD3StuffSecondIteration(
     .attr("viewBox", "0 0 10 10")
     .attr("refX", 10)
     .attr("refY", 5)
-    .attr("markerWidth", 10)
-    .attr("markerHeight", 10)
+    .attr("markerWidth", 5)
+    .attr("markerHeight", 5)
     .attr("orient", "auto-start-reverse")
     .append("path")
     .attr("class", styles.arrow)
@@ -348,22 +338,38 @@ export function runD3StuffSecondIteration(
     });
 
   // adds the circle to the node
-  node
-    .filter((d: { data: { type: string } }) => d.data.type === "Patiant")
-    .append("circle")
-    .attr("r", 10);
+  // node
+  //   .filter((d: { data: { type: string } }) => d.data.type === "Patiant")
+  //   .append("circle")
+  //   .attr("r", 10);
 
   node
-    .filter((d: { data: { type: string } }) => d.data.type === "Flight")
-    .append("rect")
     // @ts-ignore
-    .attr("width", ({ data }: any) => data.name.length * 6 + 25)
-    .attr("height", 20)
+    .filter((d: { data: any }) => d.data.type === "Flight")
+    .append("svg:foreignObject")
+    .attr("class", styles.icon)
+    .attr("y", -6)
+    .attr("x", 20)
+    .html('<i class="fas fa-plane"></i>')
+    .attr("width", ({ data }: any) => data.name.length + 25)
+    .attr("height", 50)
     .attr(
       "transform",
       // @ts-ignore
-      ({ data }: any) => `translate(${-(data.name.length * 6) - 25}, -10)`
+      ({ data }: any) => `translate(${-data.name.length - 25}, -10)`
     );
+
+  node
+    .filter((d: { data: any }) => d.data.type === "Patiant")
+    .append("svg:foreignObject")
+    .attr(
+      "class",
+      (d: any) =>
+        `${styles.icon} ${styles[d.data.status]} ${styles[d.data.gender]}`
+    )
+    .attr("y", -14)
+    .attr("x", -6)
+    .html((d: any) => `<i class="fas fa-${d.data.gender}"></i>`);
 
   // Draw event rect
   const group = node
@@ -399,12 +405,12 @@ export function runD3StuffSecondIteration(
   // node text
   node
     .append("text")
-    .attr("dy", ".35em")
+    .attr("dy", "2em")
     .attr("x", function (d: { children: any }) {
       return d.children ? -13 : 13;
     })
     .style("text-anchor", function (d: { children: any }) {
-      return d.children ? "end" : "start";
+      return "middle";
     })
     .text(function (d: { data: { name: any } }) {
       return d.data.name;
@@ -455,7 +461,7 @@ export function runD3StuffSecondIteration(
           const rect = el.getBoundingClientRect();
           svg
             .transition()
-            .duration(1000)
+            .duration(50)
             .call(
               zoom.transform,
               d3.zoomIdentity.translate(

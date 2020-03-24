@@ -7,6 +7,8 @@ import rawEdges from "./listToGraph/edges.json";
 import { useFetch } from "react-async";
 import { useDebounce } from "./utils";
 
+import "@fortawesome/fontawesome-free/css/all.css";
+
 if (window.location.search.includes("specialOps")) {
   window.localStorage.setItem("specialOps", "true");
 }
