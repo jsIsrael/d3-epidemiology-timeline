@@ -72,6 +72,15 @@ interface RawEdgeFromTo {
   shape: "icon";
 }
 
+export interface RawEdgeV2 {
+  comment: string;
+  date: string;
+  end_node: number;
+  id: number;
+  start_node: number;
+  type: RawEdgeType;
+}
+
 export interface RawEdge {
   // ???
   arrows: "to";
@@ -147,5 +156,3 @@ export interface RawNodeCountry {
   // "908ba59588d745ae8e7cce63a21c3530";
   uid: string;
 }
-
-export interface RawEdge {}
