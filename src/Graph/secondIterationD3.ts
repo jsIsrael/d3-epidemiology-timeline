@@ -72,7 +72,9 @@ export function runD3StuffSecondIteration(
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
 
-  const height = document.documentElement.clientHeight;
+  const containerRect = container.getBoundingClientRect();
+  const height = containerRect.height;
+  const width = containerRect.width;
 
   const fakeRoot: CaseNode = {
     name: "Fake Root",
@@ -96,7 +98,6 @@ export function runD3StuffSecondIteration(
 
   // const width = nodesInitial.height * 400;
 
-  const width = document.documentElement.clientWidth;
   const innerWidth = nodesInitial.height * 200;
   const innerHeight = 16000;
 

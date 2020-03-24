@@ -1,3 +1,14 @@
+.container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.container svg {
+  display: block;
+}
+
+/* Hack to hide nodes without dates... */
 [transform*="NaN"] {
   display: none;
 }
@@ -52,6 +63,7 @@
   font: 12px sans-serif;
 }
 
+/* Hide fake root */
 .node:global(.level-0) {
   display: none;
 }
@@ -78,6 +90,7 @@
   transition: all 0.3s ease;
 }
 
+/* Hide fake root edges */
 .link:global(.level-1) {
   display: none;
 }
