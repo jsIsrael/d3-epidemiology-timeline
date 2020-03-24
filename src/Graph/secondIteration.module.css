@@ -19,28 +19,34 @@
   stroke-width: 3px;
 }
 
+.node.Patiant .icon {
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+}
+
 .node.Flight rect {
   stroke: green;
 }
 
-.node.Patiant.male circle {
-  stroke: rgb(22, 130, 218);
+.male {
+  color: rgb(22, 130, 218);
 }
 
-.node.Patiant.female circle {
-  stroke: pink;
+.female {
+  color: rgb(246, 0, 0);
 }
 
-.node.Patiant.dead circle {
-  fill: rgb(192, 39, 12);
+.dead {
+  border-left: 5px rgb(192, 39, 12) solid;
 }
 
-.node.Patiant.sick circle {
-  fill: rgb(255, 255, 0);
+.sick {
+  border-left: 5px rgb(230, 145, 8) solid;
 }
 
-.node.Patiant.healthy circle {
-  fill: rgb(17, 167, 17);
+.healthy {
+  border-left: 5px rgb(17, 167, 17) solid;
 }
 
 .event circle {
@@ -52,7 +58,8 @@
 .event line {
   stroke: #ddd;
   stroke-dasharray: 5;
-  stroke-width: 3px;
+  stroke-width: 5px;
+  opacity: 0.3;
 }
 
 .event text {
@@ -96,9 +103,9 @@
 }
 
 .arrow {
-  fill: white;
+  fill: lightgrey;
   stroke: #ccc;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .link:hover {
