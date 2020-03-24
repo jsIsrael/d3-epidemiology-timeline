@@ -8,6 +8,7 @@ import { useFetch } from "react-async";
 import { useDebounce } from "./utils";
 
 import "@fortawesome/fontawesome-free/css/all.css";
+import { prepareCaseNodes } from "./Graph/secondIterationD3";
 
 if (window.location.search.includes("specialOps")) {
   window.localStorage.setItem("specialOps", "true");
@@ -77,12 +78,16 @@ function App() {
     nodesFromFile,
   ]);
 
+  const caseNodes = React.useMemo(
+    () => prepareCaseNodes(dataSetToUse.nodes, dataSetToUse.edges, true),
+    [dataSetToUse.edges, dataSetToUse.nodes]
+  );
+
   return (
     <div className={styles.wrapper}>
       <Graph
-        rawEdges={dataSetToUse.edges}
-        rawNodes={dataSetToUse.nodes}
-        nodeToStartWith={107991}
+        caseNodes={caseNodes}
+        nodeToStartWith={73976}
         edgeHoverTooltip={edgeHoverTooltip}
         nodeHoverTooltip={nodeHoverTooltip}
       />

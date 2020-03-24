@@ -1,10 +1,7 @@
 import * as React from "react";
 // import { runD3Stuff } from "./runD3Stuff";
-import {
-  runD3StuffSecondIteration,
-  prepareCaseNodes,
-} from "./secondIterationD3";
-import { CaseNode, RawNode, RawEdge } from "../listToGraph/interfaces";
+import { runD3StuffSecondIteration } from "./secondIterationD3";
+import { CaseNode } from "../listToGraph/interfaces";
 import Select from "react-select";
 import styles from "./secondIteration.module.css";
 import { useDebounce } from "../utils";
@@ -14,8 +11,7 @@ interface Props {
   onEdgeHover?: (node: CaseNode, parent?: CaseNode) => void;
   nodeHoverTooltip?: (node: CaseNode, parent?: CaseNode) => string;
   edgeHoverTooltip?: (node: CaseNode, parent?: CaseNode) => string;
-  rawNodes: RawNode[];
-  rawEdges: RawEdge[];
+  caseNodes: CaseNode[];
   nodeToStartWith: number;
 }
 
@@ -24,40 +20,27 @@ export function Graph({
   onEdgeHover,
   nodeHoverTooltip,
   edgeHoverTooltip,
-  rawNodes,
-  rawEdges,
+  caseNodes,
   nodeToStartWith,
 }: Props) {
-  const rawNodesAsArray = rawNodes;
+  const focusFn = React.useRef<(e: Element) => void>(() => {});
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   const options = React.useMemo(
     () =>
-      rawNodesAsArray
-        // @ts-ignore
-        .filter((n) => n.name)
-        .filter((n) => n.labels[0] !== "Country")
-        .map((n) => ({
-          value: n.id,
-          // @ts-ignore
-          label: n.name,
-        })),
-    [rawNodesAsArray]
+      caseNodes.map((n) => ({
+        value: n.id,
+        label: n.name,
+      })),
+    [caseNodes]
   );
 
-  const focusFn = React.useRef((el: Element) => {});
-
-  const containerRef = React.useRef<HTMLDivElement>(null);
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
   );
-  const [showOrphans, setShowOrphans] = React.useState(true);
 
   const selectedNodeDebounced = useDebounce(selectedNode, 1000);
-
-  const caseNodes = React.useMemo(
-    () => prepareCaseNodes(rawNodes, rawEdges, showOrphans),
-    [rawEdges, rawNodes, showOrphans]
-  );
 
   React.useEffect(() => {
     let destroyFn = () => {};
@@ -77,14 +60,7 @@ export function Graph({
     }
 
     return destroyFn;
-  }, [
-    onNodeHover,
-    onEdgeHover,
-    nodeHoverTooltip,
-    edgeHoverTooltip,
-    showOrphans,
-    caseNodes,
-  ]);
+  }, [onNodeHover, onEdgeHover, nodeHoverTooltip, edgeHoverTooltip, caseNodes]);
 
   React.useEffect(() => {
     if (!selectedNodeDebounced) {
@@ -123,17 +99,6 @@ export function Graph({
             setSelectedNode(v);
           }}
         />
-        <br />
-        <input
-          type="checkbox"
-          checked={showOrphans}
-          onChange={() => {
-            setShowOrphans((v) => {
-              return !v;
-            });
-          }}
-        />{" "}
-        Show Singular
       </div>
     </>
   );
