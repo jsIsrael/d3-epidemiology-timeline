@@ -23,18 +23,11 @@ export function Graph({
   caseNodes,
   nodeToStartWith,
 }: Props) {
+  const [options, setOptions] = React.useState<
+    { value: number; label: string }[]
+  >([]);
   const focusFn = React.useRef<(e: Element) => void>(() => {});
-
   const containerRef = React.useRef<HTMLDivElement>(null);
-
-  const options = React.useMemo(
-    () =>
-      caseNodes.map((n) => ({
-        value: n.id,
-        label: n.name,
-      })),
-    [caseNodes]
-  );
 
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
@@ -46,13 +39,20 @@ export function Graph({
     let destroyFn = () => {};
 
     if (containerRef.current) {
-      const { destroy, focus } = runD3StuffSecondIteration(
+      const { destroy, focus, nodes } = runD3StuffSecondIteration(
         containerRef.current,
         caseNodes,
         onNodeHover,
         onEdgeHover,
         nodeHoverTooltip,
         edgeHoverTooltip
+      );
+
+      setOptions(
+        nodes.map((n) => ({
+          value: n.id,
+          label: n.name,
+        }))
       );
 
       focusFn.current = focus;

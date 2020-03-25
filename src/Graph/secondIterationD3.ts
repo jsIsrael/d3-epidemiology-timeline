@@ -476,6 +476,10 @@ export function runD3StuffSecondIteration(
   });
 
   return {
+    nodes: nodes
+      .descendants()
+      .slice(1)
+      .map((n) => n.data),
     destroy: () => {
       svg.remove();
     },
