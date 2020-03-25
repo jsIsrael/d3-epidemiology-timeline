@@ -113,7 +113,11 @@ export const events = [
 
 const localParse = (s: string) => parse(s, "dd.MM.yyyy", 0);
 
-export const events2 = [
+export interface Event {
+  date: Date;
+  description: string;
+}
+export const events2: Event[] = [
   {
     date: localParse("15.03.2020"),
     description:

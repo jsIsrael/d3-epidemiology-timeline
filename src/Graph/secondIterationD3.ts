@@ -1,9 +1,11 @@
 import * as d3 from "d3";
 import parse from "date-fns/parse";
+import format from "date-fns/format";
 import heTimeLocale from "./locale/he-IL.json";
 import styles from "./secondIteration.module.css";
 import classnames from "classnames";
-import { events2 } from "./data2ndIteration";
+
+import { events2, Event } from "./data2ndIteration";
 import { CaseNode, RawNode, RawEdgeV2 } from "../listToGraph/interfaces";
 
 import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
@@ -420,10 +422,24 @@ export function runD3StuffSecondIteration(
       return d.data.name;
     });
 
-  const events = svg.select(".x.axis");
+  const eventsElem = svg.select(".x.axis");
 
-  events2.forEach(({ date, description }) => {
-    const g = events
+  Object.values(
+    events2.reduce((sum, event) => {
+      const arr = sum[format(event.date, "dd/MM/yyyy")] || [];
+      sum[format(event.date, "dd/MM/yyyy")] = [...arr, event];
+      return sum;
+    }, {} as Record<string, Event[]>)
+  ).forEach((events) => {
+    const { date, description } = events.slice(1).reduce(
+      (sum, { date, description }) => ({
+        date,
+        description: [sum.description, description].join(" & "),
+      }),
+      events[0]
+    );
+
+    const g = eventsElem
       .append("g")
       .attr("transform", "translate(" + timeScale(date) + "," + 50 + ")")
       .attr("class", styles.event)
@@ -438,9 +454,17 @@ export function runD3StuffSecondIteration(
         div.transition().duration(200).style("opacity", 0);
       });
 
-    g.append("circle").attr("r", 10);
+    g.append("polygon")
+      .attr("height", "40")
+      .attr("width", "40")
+      .attr("points", "20,10 30,20 20,30 10,20");
 
     g.append("text")
+      .attr("class", styles["event-no-of-events"])
+      .html(events.length);
+
+    g.append("text")
+      .attr("class", styles["event-text"])
       .text(description.substr(0, 10) + "...")
       .attr("fill", "black");
 

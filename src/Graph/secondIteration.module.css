@@ -49,10 +49,11 @@
   border-left: 5px rgb(17, 167, 17) solid;
 }
 
-.event circle {
+.event polygon {
   fill: #fff;
   stroke: green;
   stroke-width: 3px;
+  transform: translate(-20px, -20px);
 }
 
 .event line {
@@ -62,8 +63,13 @@
   opacity: 0.3;
 }
 
-.event text {
+.event-text {
   transform: translate(-20px, 20px);
+}
+
+.event-no-of-events {
+  fill: black;
+  transform: translate(0px, 4px);
 }
 
 .node text {
