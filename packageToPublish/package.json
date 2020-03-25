@@ -5,5 +5,13 @@
   "main": "./index",
   "peerDependencies": {
     "react": "^16.13.1"
+  },
+  "readme": "./README.md",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jsIsrael/d3-epidemiology-timeline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jsIsrael/d3-epidemiology-timeline/issues"
   }
 }
