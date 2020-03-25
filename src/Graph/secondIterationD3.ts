@@ -100,7 +100,8 @@ export function runD3StuffSecondIteration(
   let nodesInitial = d3.hierarchy(fakeRoot, ({ children }) => children);
 
   const innerWidth = nodesInitial.height * 700;
-  const innerHeight = 50000;
+
+  const innerHeight = nodesInitial.leaves().length * 100;
 
   const treemap = d3
     .tree<CaseNode>()
