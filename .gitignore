@@ -26,3 +26,4 @@ yarn-error.log*
 !/packageToPublish/package.json
 !/packageToPublish/index.js
 !/packageToPublish/index.d.ts
+!/packageToPublish/README.md
