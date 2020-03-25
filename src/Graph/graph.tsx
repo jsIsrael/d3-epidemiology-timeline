@@ -15,44 +15,84 @@ interface Props {
   nodeToStartWith: number;
 }
 
+function makeFlatNodes(caseNodes: CaseNode[]) {
+  return caseNodes.reduce<CaseNode[]>((a, b, c) => {
+    a.push(b);
+    if (b.children) {
+      a.push(...makeFlatNodes(b.children));
+    }
+
+    return a;
+  }, []);
+}
+
+function isSelfOrInChildren(
+  wishedCaseNodeId: number,
+  nodeToCheck: CaseNode
+): boolean {
+  if (wishedCaseNodeId === nodeToCheck.id) {
+    return true;
+  }
+
+  if (nodeToCheck.children) {
+    return nodeToCheck.children.some((childNode) => {
+      return isSelfOrInChildren(wishedCaseNodeId, childNode);
+    });
+  }
+
+  return false;
+}
+
 export function Graph({
   onNodeHover,
   onEdgeHover,
   nodeHoverTooltip,
   edgeHoverTooltip,
-  caseNodes,
+  caseNodes: inputCaseNodes,
   nodeToStartWith,
 }: Props) {
-  const [options, setOptions] = React.useState<
-    { value: number; label: string }[]
-  >([]);
   const focusFn = React.useRef<(e: Element) => void>(() => {});
   const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const flatNodes = React.useMemo(() => makeFlatNodes(inputCaseNodes), [
+    inputCaseNodes,
+  ]);
+  const options = flatNodes.map((n) => {
+    return {
+      value: n.id,
+      label: n.name,
+    };
+  });
 
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
   );
 
+  const [applyAsFilter, setApplyAsFilter] = React.useState(false);
+
   const selectedNodeDebounced = useDebounce(selectedNode, 1000);
+
+  const maybeFilteredcaseNodes = React.useMemo(() => {
+    if (applyAsFilter && selectedNode) {
+      return inputCaseNodes.filter((c) => {
+        return isSelfOrInChildren(selectedNode.value, c);
+      });
+    }
+
+    return inputCaseNodes;
+  }, [applyAsFilter, inputCaseNodes, selectedNode]);
 
   React.useEffect(() => {
     let destroyFn = () => {};
 
     if (containerRef.current) {
-      const { destroy, focus, nodes } = runD3StuffSecondIteration(
+      const { destroy, focus } = runD3StuffSecondIteration(
         containerRef.current,
-        caseNodes,
+        maybeFilteredcaseNodes,
         onNodeHover,
         onEdgeHover,
         nodeHoverTooltip,
         edgeHoverTooltip
-      );
-
-      setOptions(
-        nodes.map((n) => ({
-          value: n.id,
-          label: n.name,
-        }))
       );
 
       focusFn.current = focus;
@@ -60,7 +100,13 @@ export function Graph({
     }
 
     return destroyFn;
-  }, [onNodeHover, onEdgeHover, nodeHoverTooltip, edgeHoverTooltip, caseNodes]);
+  }, [
+    onNodeHover,
+    onEdgeHover,
+    nodeHoverTooltip,
+    edgeHoverTooltip,
+    maybeFilteredcaseNodes,
+  ]);
 
   React.useEffect(() => {
     if (!selectedNodeDebounced) {
@@ -73,7 +119,7 @@ export function Graph({
         focusFn.current && focusFn.current(el);
       }
     });
-  }, [focusFn, selectedNodeDebounced]);
+  }, [focusFn, selectedNodeDebounced, applyAsFilter]);
 
   return (
     <>
@@ -99,6 +145,12 @@ export function Graph({
             setSelectedNode(v);
           }}
         />
+        <input
+          type="checkbox"
+          checked={applyAsFilter}
+          onChange={(e) => setApplyAsFilter((v) => !v)}
+        />{" "}
+        Use As Filter
       </div>
     </>
   );
