@@ -57,12 +57,11 @@ export function Graph({
   const flatNodes = React.useMemo(() => makeFlatNodes(inputCaseNodes), [
     inputCaseNodes,
   ]);
-  const options = flatNodes.map((n) => {
-    return {
-      value: n.id,
-      label: n.name,
-    };
-  });
+
+  const options = flatNodes.map(({ id, name }) => ({
+    value: id,
+    label: name,
+  }));
 
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)

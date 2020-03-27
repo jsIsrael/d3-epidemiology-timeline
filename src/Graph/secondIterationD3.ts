@@ -21,17 +21,7 @@ export function prepareCaseNodes(
   rawEdges: RawEdgeV2[],
   showOrphans: boolean
 ) {
-  function isValidDate(d: Date | undefined | null) {
-    if (d === undefined || d === null) {
-      return false;
-    }
-
-    if (d.getTime() === 0) {
-      return false;
-    }
-
-    return true;
-  }
+  const isValidDate = (d?: Date | null) => d && d.getTime() !== 0;
 
   const g = buildGraph(rawNodes, rawEdges).filter((n) => {
     if (n.type === "Patient" && !isValidDate(n.firstPositiveTestDate)) {
@@ -44,13 +34,6 @@ export function prepareCaseNodes(
 
     return true;
   });
-
-  // console.log({
-  //   g,
-  //   a: buildGraph(rawNodes, cleanGraph(rawEdges).edges),
-  // });
-
-  // const g = buildGraph(rawNodes, rawEdges);
 
   const removeBadPatientsOrFlightsIds = new Set<number>([
     // 107341,
@@ -213,79 +196,40 @@ export function runD3StuffSecondIteration(
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
-    .on("mouseout", function (d: any) {
+    .on("mouseout", () => {
       div.transition().duration(200).style("opacity", 0);
     })
     .attr("marker-end", "url(#arrow)")
     .attr("id", (d: { data: { id: string } }) => "path" + d.data.id)
-    .attr("class", (d: { depth: any }) =>
+    .attr("class", (d: { depth: number }) =>
       classnames(styles.link, `level-${d.depth}`)
     )
-    .attr("d", (d: d3.HierarchyPointNode<unknown> | null) => {
-      const calcY = (item: d3.HierarchyPointNode<unknown> | null) =>
-        // @ts-ignore
+    .attr("d", (d: d3.HierarchyPointNode<CaseNode>) => {
+      const calcY = (item: { data: CaseNode }) =>
         timeScale(parseDate(item.data.date)) - margin.left;
-
-      // // draw lines to event rect
-      // if (d.parent.data.description) {
-      //   return (
-      //     "M" +
-      //     calcY(d) +
-      //     "," +
-      //     d.x +
-      //     "C" +
-      //     (calcY(d) + calcY(d.parent) - 20) / 2 +
-      //     "," +
-      //     d.x +
-      //     " " +
-      //     (calcY(d) + calcY(d.parent)) / 2 +
-      //     "," +
-      //     (d.parent.x + 40) +
-      //     " " +
-      //     (calcY(d.parent) - 20) +
-      //     "," +
-      //     (d.parent.x + 40)
-      //   );
-      // }
 
       return (
         "M" +
-        // @ts-ignore
-        calcY(d.parent) +
+        calcY(d.parent!) +
         "," +
-        // @ts-ignore
-        d.parent.x +
+        d.parent!.x +
         "C" +
-        // @ts-ignore
-        (calcY(d) + calcY(d.parent)) / 2 +
+        (calcY(d) + calcY(d.parent!)) / 2 +
         "," +
-        // @ts-ignore
-        d.parent.x +
+        d.parent!.x +
         " " +
-        // @ts-ignore
-        ((calcY(d) + calcY(d.parent)) / 2 - 20) +
+        ((calcY(d) + calcY(d.parent!)) / 2 - 20) +
         "," +
-        // @ts-ignore
         d.x +
         " " +
         (calcY(d) +
-          // @ts-ignore
-          (parseDate(d.parent.data.date) > parseDate(d.data.date) ? 10 : -10)) +
+          (parseDate(d.parent!.data.date) > parseDate(d.data.date)
+            ? 10
+            : -10)) +
         "," +
-        // @ts-ignore
         d.x
       );
     });
-
-  // link
-  //   .append("text")
-  //   .attr("class", styles["line-text"])
-  //   .append("textPath")
-  //   .style("text-anchor", "middle")
-  //   .style("pointer-events", "none")
-  //   .attr("startOffset", "50%")
-  //   .attr("xlink:href", (d) => `#path${d.data.id}`)
-  //   .text(({ data }: any) => data.name.split("").reverse().join(""));
 
   // adds each node as a group
   const node = g
@@ -294,10 +238,7 @@ export function runD3StuffSecondIteration(
     .data(nodes.descendants())
     .enter()
     .append("g")
-    .on("mouseover", function (d: {
-      data: CaseNode;
-      parent: { data: CaseNode | undefined };
-    }) {
+    .on("mouseover", (d: { data: CaseNode; parent: { data?: CaseNode } }) => {
       onNodeHover(d.data, d.parent?.data);
       div.transition().duration(200).style("opacity", 0.9);
       div
@@ -305,101 +246,98 @@ export function runD3StuffSecondIteration(
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 28 + "px");
     })
-    .on("mouseout", function (d: any) {
+    .on("mouseout", () => {
       div.transition().duration(200).style("opacity", 0);
     })
-    .attr("class", function (d: {
-      data: {
-        id: any;
-        type: string | number;
-        gender: string | number;
-        status: string | number;
-      };
-      depth: any;
-      children: any;
-    }) {
-      return classnames(
-        `id-${d.data.id}`,
-        `level-${d.depth}`,
-        styles.node,
-        styles[d.data.type],
-        styles[d.data.gender],
-        styles[d.data.status],
-        {
-          [styles["node--internal"]]: !!d.children,
-          [styles["node--leaf"]]: !d.children,
-        }
-      );
-    })
-    .attr("transform", function (d: {
-      data: { date: string | Date };
-      x: string;
-    }) {
-      return (
+    .attr(
+      "class",
+      (d: {
+        data: {
+          id: number;
+          type: string | number;
+          gender: string | number;
+          status: string | number;
+        };
+        depth: number;
+        children: CaseNode[];
+      }) =>
+        classnames(
+          `id-${d.data.id}`,
+          `level-${d.depth}`,
+          styles.node,
+          styles[d.data.type],
+          styles[d.data.gender],
+          styles[d.data.status],
+          {
+            [styles["node--internal"]]: !!d.children,
+            [styles["node--leaf"]]: !d.children,
+          }
+        )
+    )
+    .attr(
+      "transform",
+      (d: { data: { date: string | Date }; x: string }) =>
         "translate(" +
         (timeScale(parseDate(d.data.date)) - margin.left) +
         "," +
         d.x +
         ")"
-      );
-    });
-
-  // adds the circle to the node
-  // node
-  //   .filter((d: { data: { type: string } }) => d.data.type === "Patiant")
-  //   .append("circle")
-  //   .attr("r", 10);
+    );
 
   node
-    // @ts-ignore
-    .filter((d: { data: any }) => d.data.type === "Flight")
+    .filter((d: { data: CaseNode }) => d.data.type === "Flight")
     .append("svg:foreignObject")
     .attr("class", styles.icon)
     .attr("y", -6)
     .attr("x", 20)
     .html('<i class="fas fa-plane"></i>')
-    .attr("width", ({ data }: any) => data.name.length + 25)
+    .attr("width", ({ data }: { data: CaseNode }) => data.name.length + 25)
     .attr("height", 50)
     .attr(
       "transform",
-      // @ts-ignore
-      ({ data }: any) => `translate(${-data.name.length - 25}, -10)`
+      ({ data }: { data: CaseNode }) =>
+        `translate(${-data.name.length - 25}, -10)`
     );
 
   node
-    .filter((d: { data: any }) => d.data.type === "Patiant")
+    .filter((d: { data: CaseNode }) => d.data.type === "Patiant")
     .append("svg:foreignObject")
     .attr(
       "class",
-      (d: any) =>
-        `${styles.icon} ${styles[d.data.status]} ${styles[d.data.gender]}`
+      (d: { data: CaseNode }) =>
+        `${styles.icon} ${d.data.status && styles[d.data.status]} ${
+          d.data.gender && styles[d.data.gender]
+        }`
     )
     .attr("y", -14)
     .attr("x", -6)
-    .html((d: any) => `<i class="fas fa-${d.data.gender}"></i>`);
+    .html((d: { data: CaseNode }) => `<i class="fas fa-${d.data.gender}"></i>`);
 
   // Draw event rect
   const group = node
-    // @ts-ignore
-    .filter(({ data }: any) => data.description)
+
+    .filter((d: { data: Event }) => d.data.description)
     .append("g")
     .attr("class", styles.case)
     .attr(
       "transform",
-      // @ts-ignore
-      ({ data }: any) => `translate(${-(data.description.length * 6) - 30}, 30)`
+      ({ data }: { data: Event }) =>
+        `translate(${-(data.description.length * 6) - 30}, 30)`
     );
 
   group
     .append("line")
-    .attr("x1", ({ data }: any) => data.description.length * 6 + 10)
+    .attr("x1", ({ data }: { data: Event }) => data.description.length * 6 + 10)
     .attr("y1", 10)
-    .attr("x2", ({ data }: any) => data.description.length * 6 + 30)
+    .attr("x2", ({ data }: { data: Event }) => data.description.length * 6 + 30)
     .attr("y2", -20);
 
   group
     .append("rect")
-    .attr("width", ({ data }: any) => data.description.length * 6 + 10)
+    .attr(
+      "width",
+      ({ data }: { data: Event }) => data.description.length * 6 + 10
+    )
     .attr("height", 20);
 
   group
@@ -407,21 +345,15 @@ export function runD3StuffSecondIteration(
     .attr("dx", 6)
     .attr("y", 20 / 2)
     .attr("dy", ".35em")
-    .text(({ data }: any) => data.description);
+    .text(({ data }: { data: Event }) => data.description);
 
   // node text
   node
     .append("text")
     .attr("dy", "2em")
-    .attr("x", function (d: { children: any }) {
-      return d.children ? -13 : 13;
-    })
-    .style("text-anchor", function (d: { children: any }) {
-      return "middle";
-    })
-    .text(function (d: { data: { name: any } }) {
-      return d.data.name;
-    });
+    .attr("x", (d: { children: CaseNode[] }) => (d.children ? -13 : 13))
+    .style("text-anchor", "middle")
+    .text((d: { data: CaseNode }) => d.data.name);
 
   const eventsElem = svg.select(".x.axis");
 
@@ -444,7 +376,7 @@ export function runD3StuffSecondIteration(
       .append("g")
       .attr("transform", "translate(" + timeScale(date) + "," + 50 + ")")
       .attr("class", styles.event)
-      .on("mouseover", function (d: any) {
+      .on("mouseover", () => {
         div.transition().duration(200).style("opacity", 0.9);
         div
           .html(description)
@@ -483,7 +415,7 @@ export function runD3StuffSecondIteration(
     destroy: () => {
       svg.remove();
     },
-    focus: (el: { getBoundingClientRect: () => any }) => {
+    focus: (el: Element) => {
       const scale = d3?.event?.transform?.k || 1;
 
       svg
