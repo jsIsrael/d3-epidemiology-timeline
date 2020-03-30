@@ -6,124 +6,124 @@ interface Node {
   children?: Node[];
 }
 
-const a = {
-  name: "ly292",
-  value: 292,
-  type: "Flight",
-  properties: [
-    {
-      date: "22/03/2020",
-    },
-  ],
-  children: [
-    {
-      name: "Patiant 411",
-      value: "411",
-      type: "Patiant",
-      properties: [{ gender: "male", status: "sick", date: "22/01/2020" }],
-      children: [
-        {
-          name: "Patiant 68",
-          value: 68,
-          type: "Patiant",
-          properties: [
-            {
-              gender: "male",
-              status: "sick",
-              date: "16/02/2020",
-            },
-          ],
-        },
-        {
-          name: "Patiant 396",
-          value: 396,
-          type: "Patiant",
-          properties: [
-            {
-              gender: "female",
-              status: "sick",
-              date: "16/02/2020",
-            },
-          ],
-        },
-        {
-          name: "Patiant 298",
-          value: 298,
-          type: "Patiant",
-          properties: [
-            {
-              gender: "hralthy",
-              status: "sick",
-              date: "16/02/2020",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: "Patiant 152",
-      value: "152",
-      type: "Patiant",
-      properties: [
-        {
-          gender: "male",
-          status: "sick",
-          date: "22/01/2020",
-        },
-      ],
-      children: [
-        {
-          name: "Patiant 68",
-          value: 68,
-          type: "Patiant",
-          properties: [
-            {
-              gender: "male",
-              status: "sick",
-              date: "16/02/2020",
-            },
-          ],
-        },
-        {
-          name: "Patiant 396",
-          value: 396,
-          type: "Patiant",
-          properties: [
-            {
-              gender: "female",
-              status: "sick",
-              date: "16/02/2020",
-            },
-          ],
-        },
-        {
-          name: "Patiant 314",
-          value: 314,
-          type: "Patiant",
-          properties: [
-            {
-              gender: "female",
-              status: "healthy",
-              date: "16/02/2020",
-            },
-          ],
-        },
-        {
-          name: "Patiant 196",
-          value: 196,
-          type: "Patiant",
-          properties: [
-            {
-              gender: "female",
-              status: "sick",
-              date: "16/02/2020",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+// const a = {
+//   name: "ly292",
+//   value: 292,
+//   type: "Flight",
+//   properties: [
+//     {
+//       date: "22/03/2020",
+//     },
+//   ],
+//   children: [
+//     {
+//       name: "Patiant 411",
+//       value: "411",
+//       type: "Patiant",
+//       properties: [{ gender: "male", status: "sick", date: "22/01/2020" }],
+//       children: [
+//         {
+//           name: "Patiant 68",
+//           value: 68,
+//           type: "Patiant",
+//           properties: [
+//             {
+//               gender: "male",
+//               status: "sick",
+//               date: "16/02/2020",
+//             },
+//           ],
+//         },
+//         {
+//           name: "Patiant 396",
+//           value: 396,
+//           type: "Patiant",
+//           properties: [
+//             {
+//               gender: "female",
+//               status: "sick",
+//               date: "16/02/2020",
+//             },
+//           ],
+//         },
+//         {
+//           name: "Patiant 298",
+//           value: 298,
+//           type: "Patiant",
+//           properties: [
+//             {
+//               gender: "hralthy",
+//               status: "sick",
+//               date: "16/02/2020",
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//     {
+//       name: "Patiant 152",
+//       value: "152",
+//       type: "Patiant",
+//       properties: [
+//         {
+//           gender: "male",
+//           status: "sick",
+//           date: "22/01/2020",
+//         },
+//       ],
+//       children: [
+//         {
+//           name: "Patiant 68",
+//           value: 68,
+//           type: "Patiant",
+//           properties: [
+//             {
+//               gender: "male",
+//               status: "sick",
+//               date: "16/02/2020",
+//             },
+//           ],
+//         },
+//         {
+//           name: "Patiant 396",
+//           value: 396,
+//           type: "Patiant",
+//           properties: [
+//             {
+//               gender: "female",
+//               status: "sick",
+//               date: "16/02/2020",
+//             },
+//           ],
+//         },
+//         {
+//           name: "Patiant 314",
+//           value: 314,
+//           type: "Patiant",
+//           properties: [
+//             {
+//               gender: "female",
+//               status: "healthy",
+//               date: "16/02/2020",
+//             },
+//           ],
+//         },
+//         {
+//           name: "Patiant 196",
+//           value: 196,
+//           type: "Patiant",
+//           properties: [
+//             {
+//               gender: "female",
+//               status: "sick",
+//               date: "16/02/2020",
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//   ],
+// };
 
 const data: Node = {
   id: 1,

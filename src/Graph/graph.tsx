@@ -130,7 +130,9 @@ export function Graph({
           isRtl={true}
           options={options}
           value={selectedNode}
-          onChange={(v: any) => { setSelectedNode(v) }}
+          onChange={(v: any) => {
+            setSelectedNode(v);
+          }}
         />
         <input
           type="checkbox"

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import parse from 'date-fns/parse';
+import * as React from "react";
+import parse from "date-fns/parse";
 
 export function assertNoneNull<T>(v: T): asserts v is NonNullable<T> {
   if (v === undefined || v === null) {
