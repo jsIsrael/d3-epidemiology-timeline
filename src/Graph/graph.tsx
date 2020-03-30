@@ -58,10 +58,17 @@ export function Graph({
     inputCaseNodes,
   ]);
 
-  const options = flatNodes.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  }));
+  const options = flatNodes
+    .map(({ id, name }) => ({
+      value: id,
+      label: name,
+    }))
+    .sort((a, b) => {
+      return (
+        parseInt(a.label.match(/\d+/g) as any) -
+        parseInt(b.label.match(/\d+/g) as any)
+      );
+    });
 
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
