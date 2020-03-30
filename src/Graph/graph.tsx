@@ -69,7 +69,7 @@ export function Graph({
 
   const [applyAsFilter, setApplyAsFilter] = React.useState(false);
 
-  const selectedNodeDebounced = useDebounce(selectedNode, 1000);
+  const selectedNodeDebounced = useDebounce(selectedNode, 300);
 
   const maybeFilteredcaseNodes = React.useMemo(() => {
     if (applyAsFilter && selectedNode) {

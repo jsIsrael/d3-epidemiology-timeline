@@ -120,7 +120,7 @@
 .arrow {
   fill: lightgrey;
   stroke: #ccc;
-  stroke-width: 0.5px;
+  stroke-width: 1px;
 }
 
 .link:hover {

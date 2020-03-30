@@ -117,6 +117,7 @@ export interface Event {
   date: Date;
   description: string;
 }
+
 export const events2: Event[] = [
   {
     date: localParse("15.03.2020"),
@@ -192,7 +193,5 @@ export const events2: Event[] = [
     description: "ביצוע בדיקת מעבדה ראשונה לקורונה",
   },
 ];
-
-// console.log({ events2 });
 
 export default a;
