@@ -202,7 +202,7 @@ export function runD3StuffSecondIteration(
       const calcY = (item: { data: CaseNode }) =>
         timeScale(parseDate(item.data.date)) - margin.left;
 
-      return (
+      const path =
         "M" +
         calcY(d.parent!) +
         "," +
@@ -221,8 +221,11 @@ export function runD3StuffSecondIteration(
             ? 10
             : -10)) +
         "," +
-        d.x
-      );
+        d.x;
+      if (path.indexOf("NaN") > 0) {
+        return "";
+      }
+      return path;
     });
 
   // adds each node as a group
@@ -268,15 +271,18 @@ export function runD3StuffSecondIteration(
           }
         )
     )
-    .attr(
-      "transform",
-      (d: { data: { date: string | Date }; x: string }) =>
+    .attr("transform", (d: { data: { date: string | Date }; x: string }) => {
+      const translate =
         "translate(" +
         (timeScale(parseDate(d.data.date)) - margin.left) +
         "," +
         d.x +
-        ")"
-    );
+        ")";
+      if (translate.indexOf("NaN") > 0) {
+        return "";
+      }
+      return translate;
+    });
 
   node
     .filter((d: { data: CaseNode }) => d.data.type === "Flight")
