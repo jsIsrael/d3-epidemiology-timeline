@@ -37,14 +37,14 @@ function App() {
 
   const edgeHoverTooltip = React.useCallback(
     (node: CaseNode, parent?: CaseNode) =>
-      `${parent?.name} -> ${node.name}(id:${node.id})`,
+      `${parent?.name} <i class="fas fa-arrow-left"></i> ${node.name}(id:${node.id})`,
     []
   );
 
   const nodeHoverTooltip = React.useCallback((node, parent) => {
     return `<div>
       ${node.id}<br />
-      ${node.name}<br />
+      <b>${node.name}</b><br />
       ${node.gender}<br />
       ${node.date}<br />
       ${node.status}<br />

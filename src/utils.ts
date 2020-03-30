@@ -1,5 +1,5 @@
-import parse from "date-fns/parse";
-import * as React from "react";
+import * as React from 'react';
+import parse from 'date-fns/parse';
 
 export function assertNoneNull<T>(v: T): asserts v is NonNullable<T> {
   if (v === undefined || v === null) {
@@ -16,10 +16,15 @@ export function useDebounce<T>(value: T, delay: number) {
   // State and setters for debounced value
   const [debouncedValue, setDebouncedValue] = React.useState(value);
 
+  // The ref object is a generic container whose current property is mutable ...
+  // ... and can hold any value, similar to an instance property on a class.
+  // We use it to store the setTimeout ID so that we can cancel it on effect cleanup.
+  const handler = React.useRef<any>();
+
   React.useEffect(
     () => {
       // Update debounced value after delay
-      const handler = setTimeout(() => {
+      handler.current = setTimeout(() => {
         setDebouncedValue(value);
       }, delay);
 
@@ -27,7 +32,7 @@ export function useDebounce<T>(value: T, delay: number) {
       // This is how we prevent debounced value from updating if value is changed ...
       // .. within the delay period. Timeout gets cleared and restarted.
       return () => {
-        clearTimeout(handler);
+        clearTimeout(handler.current);
       };
     },
     [value, delay] // Only re-call effect if value or delay changes

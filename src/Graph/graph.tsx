@@ -123,32 +123,20 @@ export function Graph({
   return (
     <>
       <div ref={containerRef} className={styles.container} />
-      <div
-        style={{
-          width: 300,
-          // height: 100,
-          position: "fixed",
-          top: 10,
-          left: 10,
-          // backgroundColor: "red",
-          boxShadow: "1px 1px 1px #000",
-        }}
-      >
+      <div className={styles.menuContainer}>
         <Select
           isSearchable={true}
           isClearable={true}
           isRtl={true}
           options={options}
           value={selectedNode}
-          onChange={(v: any) => {
-            setSelectedNode(v);
-          }}
+          onChange={(v: any) => { setSelectedNode(v) }}
         />
         <input
           type="checkbox"
           checked={applyAsFilter}
           onChange={(e) => setApplyAsFilter((v) => !v)}
-        />{" "}
+        />
         Use As Filter
       </div>
     </>

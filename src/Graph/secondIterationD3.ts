@@ -5,10 +5,10 @@ import heTimeLocale from "./locale/he-IL.json";
 import styles from "./secondIteration.module.css";
 import classnames from "classnames";
 
-import { events2, Event } from "./data2ndIteration";
-import { CaseNode, RawNode, RawEdgeV2 } from "../listToGraph/interfaces";
+import { Event, events2 } from "./data2ndIteration";
+import { CaseNode, RawEdgeV2, RawNode } from "../listToGraph/interfaces";
 
-import { toCaseNodeTree, buildGraph } from "../listToGraph/processor";
+import { buildGraph, toCaseNodeTree } from "../listToGraph/processor";
 
 const noop = () => {};
 
@@ -28,11 +28,7 @@ export function prepareCaseNodes(
       return false;
     }
 
-    if (n.type === "Flight" && !isValidDate(n.date)) {
-      return false;
-    }
-
-    return true;
+    return !(n.type === "Flight" && !isValidDate(n.date));
   });
 
   const removeBadPatientsOrFlightsIds = new Set<number>([
@@ -46,11 +42,9 @@ export function prepareCaseNodes(
     // .filter((n) => n.children !== undefined)
     .filter((n) => !removeBadPatientsOrFlightsIds.has(n.id));
 
-  const cases = showOrphans
+  return showOrphans
     ? casesBefore
     : casesBefore.filter((n) => n.children !== undefined);
-
-  return cases;
 }
 
 export function runD3StuffSecondIteration(
@@ -290,7 +284,7 @@ export function runD3StuffSecondIteration(
     .attr("class", styles.icon)
     .attr("y", -6)
     .attr("x", 20)
-    .html('<i class="fas fa-plane"></i>')
+    .html('<i class="fas fa-plane"/>')
     .attr("width", ({ data }: { data: CaseNode }) => data.name.length + 25)
     .attr("height", 50)
     .attr(
