@@ -111,7 +111,6 @@ export function buildGraph(rawNodes: RawNode[], rawEdges: RawEdgeV2[]) {
   }
 
   const arr = [...nodesMap.values()];
-
   return arr;
 }
 
@@ -175,7 +174,7 @@ function patientRawNodeToNode(node: RawNodePatient): ProcessedNodePatient {
     id: node.id,
     uid: node.uid,
     name: node.name,
-    firstPositiveTestDate: parseAdHocDate(node.firstPositiveTestDate),
+    firstPositiveTestDate: new Date(node.firstPositiveTestDate),
     age: node.age,
     dsid: node.dsid,
     infectedLevel: node.infectedLevel,

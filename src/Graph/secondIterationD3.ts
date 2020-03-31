@@ -24,6 +24,9 @@ export function prepareCaseNodes(
   const isValidDate = (d?: Date | null) => d && d.getTime() !== 0;
 
   const g = buildGraph(rawNodes, rawEdges).filter((n) => {
+    if (!n) {
+      return false;
+    }
     if (n.type === "Patient" && !isValidDate(n.firstPositiveTestDate)) {
       return false;
     }
