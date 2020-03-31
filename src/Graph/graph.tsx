@@ -78,7 +78,7 @@ export function Graph({
 
   const selectedNodeDebounced = useDebounce(selectedNode, 300);
 
-  const maybeFilteredcaseNodes = React.useMemo(() => {
+  const maybeFilteredCaseNodes = React.useMemo(() => {
     if (applyAsFilter && selectedNode) {
       return inputCaseNodes.filter((c) => {
         return isSelfOrInChildren(selectedNode.value, c);
@@ -88,17 +88,25 @@ export function Graph({
     return inputCaseNodes;
   }, [applyAsFilter, inputCaseNodes, selectedNode]);
 
+  const onCaseClick = (e: any) => {
+    const selected = options.find((option) => {
+      return e.data.id === option.value;
+    });
+    setSelectedNode(selected);
+  };
+
   React.useEffect(() => {
     let destroyFn = () => {};
 
     if (containerRef.current) {
       const { destroy, focus } = runD3StuffSecondIteration(
         containerRef.current,
-        maybeFilteredcaseNodes,
+        maybeFilteredCaseNodes,
         onNodeHover,
         onEdgeHover,
         nodeHoverTooltip,
-        edgeHoverTooltip
+        edgeHoverTooltip,
+        onCaseClick
       );
 
       focusFn.current = focus;
@@ -111,7 +119,7 @@ export function Graph({
     onEdgeHover,
     nodeHoverTooltip,
     edgeHoverTooltip,
-    maybeFilteredcaseNodes,
+    maybeFilteredCaseNodes,
   ]);
 
   React.useEffect(() => {
@@ -119,8 +127,12 @@ export function Graph({
       return;
     }
 
+    setFocusOnSelectedNode(selectedNodeDebounced.value);
+  }, [focusFn, selectedNodeDebounced, applyAsFilter]);
+
+  const setFocusOnSelectedNode = (id: number) => {
     window.requestAnimationFrame(() => {
-      const el = document.querySelector(`.id-${selectedNodeDebounced.value}`);
+      const el = document.querySelector(`.id-${id}`);
       const previousFocused = document.querySelector(styles.focused);
       if (el) {
         focusFn.current && focusFn.current(el);
@@ -128,7 +140,7 @@ export function Graph({
         previousFocused?.classList.remove(styles.focused);
       }
     });
-  }, [focusFn, selectedNodeDebounced, applyAsFilter]);
+  };
 
   return (
     <>

@@ -53,7 +53,8 @@ export function runD3StuffSecondIteration(
   onNodeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
   onEdgeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
   nodeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
-  edgeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2
+  edgeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
+  onCaseClick: (node: CaseNode, parent?: CaseNode) => void = noop
 ) {
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);
@@ -246,6 +247,7 @@ export function runD3StuffSecondIteration(
     .on("mouseout", () => {
       div.transition().duration(200).style("opacity", 0);
     })
+    .on("click", onCaseClick)
     .attr(
       "class",
       (d: {
