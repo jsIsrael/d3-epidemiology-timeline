@@ -93,7 +93,6 @@ export function Graph({
 
     if (applyUnknownInfectedSource) {
       return inputCaseNodes.filter((c) => {
-        console.log(c.infectedSource, c.infectedSource === "לא ידוע");
         return applyUnknownInfectedSource && c.infectedSource === "לא ידוע";
       });
     }
