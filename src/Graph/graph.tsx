@@ -121,8 +121,11 @@ export function Graph({
 
     window.requestAnimationFrame(() => {
       const el = document.querySelector(`.id-${selectedNodeDebounced.value}`);
+      const previousFocused = document.querySelector(styles.focused);
       if (el) {
         focusFn.current && focusFn.current(el);
+        el.firstElementChild?.classList.add(styles.focused);
+        previousFocused?.classList.remove(styles.focused);
       }
     });
   }, [focusFn, selectedNodeDebounced, applyAsFilter]);

@@ -149,3 +149,19 @@ div.tooltip {
   border-radius: 8px;
   pointer-events: none;
 }
+
+.focused {
+  animation: blink 2s linear infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
