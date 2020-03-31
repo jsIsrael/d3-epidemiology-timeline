@@ -133,7 +133,7 @@ export function Graph({
   const setFocusOnSelectedNode = (id: number) => {
     window.requestAnimationFrame(() => {
       const el = document.querySelector(`.id-${id}`);
-      const previousFocused = document.querySelector(styles.focused);
+      const previousFocused = document.querySelector(`.${styles.focused}`);
       if (el) {
         focusFn.current && focusFn.current(el);
         el.firstElementChild?.classList.add(styles.focused);
