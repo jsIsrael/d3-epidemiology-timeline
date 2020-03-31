@@ -64,10 +64,12 @@ export function Graph({
       label: name,
     }))
     .sort((a, b) => {
-      return (
-        parseInt(a.label.match(/\d+/g) as any) -
-        parseInt(b.label.match(/\d+/g) as any)
-      );
+      const first = parseInt(a.label.match(/\d+/g) as any);
+      const second = parseInt(b.label.match(/\d+/g) as any);
+      if (first && second) {
+        return first - second;
+      }
+      return -1;
     });
 
   const [selectedNode, setSelectedNode] = React.useState(
