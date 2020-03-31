@@ -57,6 +57,7 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
           date: n.firstPositiveTestDate,
           gender: n.gender,
           status: n.status,
+          infectedSource: n.infectedSource,
         };
       }
 

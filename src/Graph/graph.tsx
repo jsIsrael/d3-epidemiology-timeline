@@ -77,6 +77,10 @@ export function Graph({
   );
 
   const [applyAsFilter, setApplyAsFilter] = React.useState(false);
+  const [
+    applyUnknownInfectedSource,
+    setApplyUnknownInfectedSource,
+  ] = React.useState(false);
 
   const selectedNodeDebounced = useDebounce(selectedNode, 300);
 
@@ -87,8 +91,15 @@ export function Graph({
       });
     }
 
+    if (applyUnknownInfectedSource) {
+      return inputCaseNodes.filter((c) => {
+        console.log(c.infectedSource, c.infectedSource === "לא ידוע");
+        return applyUnknownInfectedSource && c.infectedSource === "לא ידוע";
+      });
+    }
+
     return inputCaseNodes;
-  }, [applyAsFilter, inputCaseNodes, selectedNode]);
+  }, [applyAsFilter, inputCaseNodes, selectedNode, applyUnknownInfectedSource]);
 
   const onCaseClick = (e: any) => {
     const selected = options.find((option) => {
@@ -130,7 +141,12 @@ export function Graph({
     }
 
     setFocusOnSelectedNode(selectedNodeDebounced.value);
-  }, [focusFn, selectedNodeDebounced, applyAsFilter]);
+  }, [
+    focusFn,
+    selectedNodeDebounced,
+    applyAsFilter,
+    applyUnknownInfectedSource,
+  ]);
 
   const setFocusOnSelectedNode = (id: number) => {
     window.requestAnimationFrame(() => {
@@ -164,6 +180,13 @@ export function Graph({
           onChange={(e) => setApplyAsFilter((v) => !v)}
         />
         Use As Filter
+        <br />
+        <input
+          type="checkbox"
+          checked={applyUnknownInfectedSource}
+          onChange={(e) => setApplyUnknownInfectedSource((v) => !v)}
+        />
+        Infected Source Unknown
       </div>
     </>
   );

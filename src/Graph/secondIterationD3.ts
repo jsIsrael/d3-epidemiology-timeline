@@ -72,6 +72,7 @@ export function runD3StuffSecondIteration(
     type: "Flight",
     children: caseNodes,
     id: 123123,
+    infectedSource: "לא ידוע",
   };
 
   //  assigns the data to a hierarchy using parent-child relationships
