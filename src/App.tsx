@@ -45,9 +45,9 @@ function App() {
     return `<div>
       ${node.id}<br />
       <b>${node.name}</b><br />
-      ${node.gender}<br />
+      ${node.gender ? node.gender + "<br />" : ""}
       ${node.date.toLocaleDateString("he-IL")}<br />
-      ${node.status}
+      ${node.status || ""}
     </div>`;
   }, []);
 
