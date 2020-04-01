@@ -187,7 +187,7 @@ export function Graph({
   return (
     <>
       <div ref={containerRef} className={styles.container} />
-      <div className={styles.menuContainer}>
+      <div id="graph-select-container" className={styles.menuContainer}>
         <Select
           isSearchable={true}
           isClearable={true}
