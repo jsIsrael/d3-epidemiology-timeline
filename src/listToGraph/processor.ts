@@ -12,7 +12,7 @@ import {
   ProcessedNodeTourist,
   RawNodeTourist,
 } from "./interfaces";
-import { assertNoneNull, parseAdHocDate } from "../utils";
+import { assertNoneNull } from "../utils";
 
 export function genderHebToEng(heb: "זכר" | "נקבה"): "male" | "female" {
   return ({
@@ -214,81 +214,3 @@ function patientRawNodeToNode(node: RawNodePatient): ProcessedNodePatient {
     // raw: node,
   };
 }
-
-function parseFlightDetails(rawName: string) {
-  const r = rawName.match(/(\d{2}\/\d{2}\/\d{4})$/);
-  if (r === null) {
-    return {
-      name: rawName,
-      date: null,
-    };
-  }
-
-  return {
-    // name: rawName.replace("-" + r[1], ""),
-    name: rawName,
-    date: parseAdHocDate(r[1]),
-  };
-}
-
-// function getAllAncestorsWithoutCircularity(
-//   nodeId: number,
-//   allNodes: ProcessedNode[]
-// ) {
-//   const allNodesMap = new Map(allNodes.map((n) => [n.id, n]));
-//   const node = allNodesMap.get(nodeId)!;
-
-//   const allParents = new Set(node.parents);
-
-//   getAllAncestorsWithoutCircularityStep(nodeId, allNodesMap, allParents);
-
-//   return allParents;
-// }
-
-// function getAllAncestorsWithoutCircularityStep(
-//   nodeId: number,
-//   allNodesMap: Map<number, ProcessedNode>,
-//   allParents: Set<number>
-// ) {
-//   const node = allNodesMap.get(nodeId)!;
-
-//   const effectiveParents = node.parents.filter((p) => !allParents.has(p));
-
-//   if (effectiveParents.length > 0) {
-//     for (const parent of effectiveParents) {
-//       allParents.add(parent);
-//       getAllAncestorsWithoutCircularityStep(parent, allNodesMap, allParents);
-//     }
-//   }
-// }
-
-// function getAllAncestorsWithoutCircularity(
-//   nodeId: number,
-//   allNodes: ProcessedNode[]
-// ) {
-//   const allNodesMap = new Map(allNodes.map((n) => [n.id, n]));
-//   const node = allNodesMap.get(nodeId)!;
-
-//   const allParents = new Set(node.parents);
-
-//   getAllAncestorsWithoutCircularityStep(nodeId, allNodesMap, allParents);
-
-//   return allParents;
-// }
-
-// function getAllAncestorsWithoutCircularityStep(
-//   nodeId: number,
-//   allNodesMap: Map<number, ProcessedNode>,
-//   allParents: Set<number>
-// ) {
-//   const node = allNodesMap.get(nodeId)!;
-
-//   const effectiveParents = node.parents.filter((p) => !allParents.has(p));
-
-//   if (effectiveParents.length > 0) {
-//     for (const parent of effectiveParents) {
-//       allParents.add(parent);
-//       getAllAncestorsWithoutCircularityStep(parent, allNodesMap, allParents);
-//     }
-//   }
-// }
