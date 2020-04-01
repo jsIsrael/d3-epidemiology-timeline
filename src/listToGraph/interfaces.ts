@@ -17,11 +17,19 @@ export interface CaseNode {
 export type ProcessedNode =
   | ProcessedNodeFlight
   | ProcessedNodePatient
-  | ProcessedNodeCountry;
+  | ProcessedNodeCountry
+  | ProcessedNodeTourist;
 
 interface WithParentsAndChildren {
   parents: number[];
   children: number[];
+}
+
+export interface ProcessedNodeTourist extends WithParentsAndChildren {
+  type: "Tourist";
+  id: number;
+  name: string;
+  uid: string;
 }
 
 export interface ProcessedNodeFlight extends WithParentsAndChildren {
@@ -95,7 +103,7 @@ export interface RawEdge {
   type: RawEdgeType;
 }
 
-export type NodeType = "Flight" | "Patient" | "Country";
+export type NodeType = "Flight" | "Patient" | "Country" | "Tourist";
 export type NodeGender = "זכר" | "נקבה";
 export type InfectedLevel =
   // what
@@ -107,7 +115,11 @@ export type InfectedLevel =
 
 type Status = "מאומת" | "החלים";
 
-export type RawNode = RawNodeCountry | RawNodeFlight | RawNodePatient;
+export type RawNode =
+  | RawNodeCountry
+  | RawNodeFlight
+  | RawNodePatient
+  | RawNodeTourist;
 
 export interface RawNodeFlight {
   // 106649
@@ -120,6 +132,14 @@ export interface RawNodeFlight {
   /**
    * "244bc793880e4348b3dfc80f667ccc29"
    */
+  uid: string;
+}
+
+export interface RawNodeTourist {
+  // 106649
+  id: number;
+  labels: ["Tourist"];
+  name: string;
   uid: string;
 }
 

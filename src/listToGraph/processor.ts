@@ -9,6 +9,8 @@ import {
   ProcessedNodePatient,
   CaseNode,
   RawEdgeV2,
+  ProcessedNodeTourist,
+  RawNodeTourist,
 } from "./interfaces";
 import { assertNoneNull, parseAdHocDate } from "../utils";
 
@@ -84,7 +86,10 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
 }
 
 export function buildGraph(rawNodes: RawNode[], rawEdges: RawEdgeV2[]) {
-  const rawNodesAsArray = rawNodes;
+  const rawNodesAsArray = rawNodes.filter(
+    // @ts-ignore
+    (node) => node.labels[0] !== "Manifest"
+  );
   const nodesMap = new Map(
     rawNodesAsArray.map((n) => [n.id, rawNodeToNode(n)])
   );
@@ -133,7 +138,30 @@ function rawNodeToNode(rawNode: RawNode): ProcessedNode {
         // @ts-ignore
         rawNode
       );
+    case "Tourist": {
+      return touristRawNodeToNode(
+        // @ts-ignore
+        rawNode
+      );
+    }
   }
+}
+
+function touristRawNodeToNode(node: RawNodeTourist): ProcessedNodeTourist {
+  let name = node.name;
+  if (!name) {
+    console.warn("Tourist Name missing:", node);
+    name = "";
+  }
+
+  return {
+    id: node.id,
+    uid: node.uid,
+    name: name,
+    type: "Tourist",
+    children: [],
+    parents: [],
+  };
 }
 
 function flightRawNodeToNode(node: RawNodeFlight): ProcessedNodeFlight {
