@@ -6,7 +6,7 @@ export interface Event {
 export interface CaseNode {
   name: string;
   id: number;
-  type: "Patiant" | "Flight";
+  type: "Patiant" | "Flight" | "Tourist";
   date: string | Date;
   gender?: "male" | "female";
   status?: "sick" | "healthy" | "dead";

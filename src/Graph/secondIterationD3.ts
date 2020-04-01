@@ -303,6 +303,21 @@ export function runD3StuffSecondIteration(
     );
 
   node
+    .filter((d: { data: CaseNode }) => d.data.type === "Tourist")
+    .append("svg:foreignObject")
+    .attr("class", `${styles.icon} ${styles.tourist}`)
+    .attr("y", -6)
+    .attr("x", 20)
+    .html('<i class="fas fa-users"/>')
+    .attr("width", ({ data }: { data: CaseNode }) => data.name.length + 25)
+    .attr("height", 50)
+    .attr(
+      "transform",
+      ({ data }: { data: CaseNode }) =>
+        `translate(${-data.name.length - 25}, -10)`
+    );
+
+  node
     .filter((d: { data: CaseNode }) => d.data.type === "Patiant")
     .append("svg:foreignObject")
     .attr(

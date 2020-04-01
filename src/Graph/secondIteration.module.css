@@ -46,6 +46,10 @@
   color: rgb(246, 0, 0);
 }
 
+.tourist {
+  color: rgb(150, 0, 230);
+}
+
 .dead {
   border-left: 5px rgb(192, 39, 12) solid;
 }
