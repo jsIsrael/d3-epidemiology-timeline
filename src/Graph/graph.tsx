@@ -2,7 +2,6 @@ import * as React from "react";
 import { runD3StuffSecondIteration } from "./secondIterationD3";
 import { CaseNode } from "../listToGraph/interfaces";
 import Select from "react-select";
-// @ts-ignore
 import { List } from "react-virtualized";
 import styles from "./secondIteration.module.css";
 import { useDebounce } from "../utils";
