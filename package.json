@@ -19,6 +19,7 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
+    "react-virtualized": "^9.21.2",
     "typescript": "~3.8.3"
   },
   "scripts": {

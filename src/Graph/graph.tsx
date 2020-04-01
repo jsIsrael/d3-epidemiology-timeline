@@ -1,8 +1,9 @@
 import * as React from "react";
-// import { runD3Stuff } from "./runD3Stuff";
 import { runD3StuffSecondIteration } from "./secondIterationD3";
 import { CaseNode } from "../listToGraph/interfaces";
 import Select from "react-select";
+// @ts-ignore
+import { List } from "react-virtualized";
 import styles from "./secondIteration.module.css";
 import { useDebounce } from "../utils";
 
@@ -42,6 +43,31 @@ function isSelfOrInChildren(
 
   return false;
 }
+
+const MenuList = (props: any) => {
+  const rows = props.children;
+  // @ts-ignore
+  const rowRenderer = ({ key, index, isScrolling, isVisible, style }) => {
+    // @ts-ignore
+    const elm = rows[index];
+    return (
+      <div key={key} style={style}>
+        {elm}
+      </div>
+    );
+  };
+
+  return (
+    <List
+      style={{ width: "100%", textAlign: "right" }}
+      width={300}
+      height={300}
+      rowHeight={30}
+      rowCount={rows && rows.length ? rows.length : 0}
+      rowRenderer={rowRenderer}
+    />
+  );
+};
 
 export function Graph({
   onNodeHover,
@@ -169,6 +195,7 @@ export function Graph({
           isRtl={true}
           options={options}
           value={selectedNode}
+          components={{ MenuList }}
           onChange={(v: any) => {
             setSelectedNode(v);
           }}
