@@ -5,7 +5,7 @@ import { CaseNode, RawNode, RawEdgeV2 } from "./listToGraph/interfaces";
 import rawNodes from "./listToGraph/nodes_new.json";
 import rawEdges from "./listToGraph/edges_new.json";
 import { useFetch } from "react-async";
-import { parseAdHocDate, useDebounce } from "./utils";
+import { useDebounce } from "./utils";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 import { prepareCaseNodes } from "./Graph/secondIterationD3";
@@ -87,7 +87,7 @@ function App() {
     <div className={styles.wrapper}>
       <Graph
         caseNodes={caseNodes}
-        nodeToStartWith={73976}
+        nodeToStartWith={735314}
         edgeHoverTooltip={edgeHoverTooltip}
         nodeHoverTooltip={nodeHoverTooltip}
       />

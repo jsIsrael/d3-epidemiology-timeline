@@ -133,6 +133,7 @@ export interface RawNodeFlight {
    * "244bc793880e4348b3dfc80f667ccc29"
    */
   uid: string;
+  arrivalDate: string;
 }
 
 export interface RawNodeTourist {

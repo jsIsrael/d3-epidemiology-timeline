@@ -170,14 +170,13 @@ function flightRawNodeToNode(node: RawNodeFlight): ProcessedNodeFlight {
     console.warn("Flight Name missing:", node);
     name = "";
   }
-  const p = parseFlightDetails(name);
 
   return {
     id: node.id,
     uid: node.uid,
-    name: p.name,
+    name: name,
     type: "Flight",
-    date: p.date,
+    date: new Date(node.arrivalDate),
     // raw: node,
     children: [],
     parents: [],
