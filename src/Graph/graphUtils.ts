@@ -1,5 +1,10 @@
 import { CaseNode } from "../listToGraph/interfaces";
 
+export const noop = () => {};
+export const noop2 = () => {
+  return "";
+};
+
 export function makeFlatNodes(caseNodes: CaseNode[]) {
   return caseNodes.reduce<CaseNode[]>((a, b, c) => {
     a.push(b);

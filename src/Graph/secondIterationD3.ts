@@ -7,11 +7,7 @@ import classnames from "classnames";
 import { Event, events2 } from "./data2ndIteration";
 import { CaseNode, RawEdgeV2, RawNode } from "../listToGraph/interfaces";
 import { buildGraph, toCaseNodeTree } from "../listToGraph/processor";
-
-const noop = () => {};
-const noop2 = () => {
-  return "";
-};
+import { noop, noop2 } from "./graphUtils";
 
 export function prepareCaseNodes(
   rawNodes: RawNode[],
@@ -36,7 +32,6 @@ export function prepareCaseNodes(
   ]);
 
   const casesBefore = toCaseNodeTree(g)
-    // .filter((n) => n.children !== undefined)
     .filter((n) => !removeBadPatientsOrFlightsIds.has(n.id))
     .sort((a, b) => {
       // @ts-ignore
@@ -117,7 +112,7 @@ export function runD3StuffSecondIteration(
 
   const zoom = d3
     .zoom()
-    .scaleExtent([0.1, 40])
+    .scaleExtent([0.05, 40])
     .translateExtent([
       [-100, -innerHeight],
       [innerWidth + 100, innerHeight + 100],
@@ -223,6 +218,11 @@ export function runD3StuffSecondIteration(
       const calcY = (item: { data: CaseNode }) =>
         timeScale(parseDate(item.data.date)) - margin.left;
 
+      const sameDate =
+        // @ts-ignore
+        parseDate(d.parent?.data.date).getDate() ===
+        parseDate(d.data.date).getDate();
+
       const path =
         "M" +
         calcY(d.parent!) +
@@ -238,11 +238,10 @@ export function runD3StuffSecondIteration(
         d.x +
         " " +
         (calcY(d) +
-          (parseDate(d.parent!.data.date) > parseDate(d.data.date)
-            ? 10
-            : -10)) +
+          (sameDate ? 30 : 0) +
+          (parseDate(d.parent!.data.date) > parseDate(d.data.date) ? 5 : -5)) +
         "," +
-        d.x;
+        (d.x + (sameDate ? 30 : 0));
       if (path.indexOf("NaN") > 0) {
         return "";
       }
@@ -289,10 +288,14 @@ export function runD3StuffSecondIteration(
           }
         )
     )
-    .attr("transform", (d: { data: { date: string | Date }; x: string }) => {
+    .attr("transform", (d: d3.HierarchyPointNode<CaseNode>) => {
+      const sameDate =
+        // @ts-ignore
+        parseDate(d.parent?.data.date).getDate() ===
+        parseDate(d.data.date).getDate();
       const translate = `translate(${
-        timeScale(parseDate(d.data.date)) - margin.left
-      },${d.x})`;
+        timeScale(parseDate(d.data.date)) - margin.left + (sameDate ? 30 : 0)
+      }, ${sameDate ? d.x + 30 : d.x})`;
       if (translate.indexOf("NaN") > 0) {
         return "";
       }
