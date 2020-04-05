@@ -37,12 +37,10 @@ export function Graph({
       label: name,
     }))
     .sort((a, b) => {
-      const first = parseInt(a.label.match(/\d+/g) as any);
-      const second = parseInt(b.label.match(/\d+/g) as any);
-      if (first && second) {
-        return first - second;
-      }
-      return -1;
+      return a.label.localeCompare(b.label, "he", {
+        sensitivity: "base",
+        numeric: true,
+      });
     });
 
   const [selectedNode, setSelectedNode] = React.useState(
