@@ -4,14 +4,11 @@ import format from "date-fns/format";
 import heTimeLocale from "./locale/he-IL.json";
 import styles from "./secondIteration.module.css";
 import classnames from "classnames";
-
 import { Event, events2 } from "./data2ndIteration";
 import { CaseNode, RawEdgeV2, RawNode } from "../listToGraph/interfaces";
-
 import { buildGraph, toCaseNodeTree } from "../listToGraph/processor";
 
 const noop = () => {};
-
 const noop2 = () => {
   return "";
 };
@@ -174,11 +171,29 @@ export function runD3StuffSecondIteration(
 
   const link = g.selectAll(".link").data(nodes.descendants().slice(1)).enter();
 
+  // Add the tooltip element to the graph
   const div = d3
     .select(container)
     .append("div")
     .attr("class", styles.tooltip)
     .style("opacity", 0);
+
+  const addTooltip = (
+    hoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
+    onHover: (node: CaseNode, parent?: CaseNode) => void = noop,
+    d: any
+  ) => {
+    onHover(d.data, d.parent?.data);
+    div.transition().duration(200).style("opacity", 0.9);
+    div
+      .html(hoverTooltip(d.data, d.parent?.data))
+      .style("left", d3.event.pageX + "px")
+      .style("top", d3.event.pageY - 28 + "px");
+  };
+
+  const removeTooltip = () => {
+    div.transition().duration(200).style("opacity", 0);
+  };
 
   link
     .append("path")
@@ -186,15 +201,10 @@ export function runD3StuffSecondIteration(
       data: CaseNode;
       parent: { data: CaseNode | undefined };
     }) {
-      onEdgeHover(d.data, d.parent?.data);
-      div.transition().duration(200).style("opacity", 0.9);
-      div
-        .html(edgeHoverTooltip(d.data, d.parent?.data))
-        .style("left", d3.event.pageX + "px")
-        .style("top", d3.event.pageY - 28 + "px");
+      addTooltip(edgeHoverTooltip, onEdgeHover, d);
     })
     .on("mouseout", () => {
-      div.transition().duration(200).style("opacity", 0);
+      removeTooltip();
     })
     .attr("marker-end", "url(#arrow)")
     .attr("id", (d: { data: { id: string } }) => "path" + d.data.id)
@@ -234,20 +244,14 @@ export function runD3StuffSecondIteration(
   // adds each node as a group
   const node = g
     .selectAll(".node")
-    // onNodeHover(d.data);
     .data(nodes.descendants())
     .enter()
     .append("g")
     .on("mouseover", (d: { data: CaseNode; parent: { data?: CaseNode } }) => {
-      onNodeHover(d.data, d.parent?.data);
-      div.transition().duration(200).style("opacity", 0.9);
-      div
-        .html(nodeHoverTooltip(d.data, d.parent?.data))
-        .style("left", d3.event.pageX + "px")
-        .style("top", d3.event.pageY - 28 + "px");
+      addTooltip(nodeHoverTooltip, onNodeHover, d);
     })
     .on("mouseout", () => {
-      div.transition().duration(200).style("opacity", 0);
+      removeTooltip();
     })
     .on("click", onCaseClick)
     .attr(
