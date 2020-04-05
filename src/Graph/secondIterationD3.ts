@@ -37,7 +37,11 @@ export function prepareCaseNodes(
 
   const casesBefore = toCaseNodeTree(g)
     // .filter((n) => n.children !== undefined)
-    .filter((n) => !removeBadPatientsOrFlightsIds.has(n.id));
+    .filter((n) => !removeBadPatientsOrFlightsIds.has(n.id))
+    .sort((a, b) => {
+      // @ts-ignore
+      return a.date - b.date;
+    });
 
   return showOrphans
     ? casesBefore
@@ -166,7 +170,7 @@ export function runD3StuffSecondIteration(
   svg
     .append("g")
     .attr("class", "x axis")
-    .attr("transform", "translate(0," + (height - 30) + ")")
+    .attr("transform", `translate(0,${height - 30})`)
     .call(xAxis);
 
   const link = g.selectAll(".link").data(nodes.descendants().slice(1)).enter();
@@ -181,14 +185,16 @@ export function runD3StuffSecondIteration(
   const addTooltip = (
     hoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
     onHover: (node: CaseNode, parent?: CaseNode) => void = noop,
-    d: any
+    d: any,
+    x: number,
+    y: number
   ) => {
     onHover(d.data, d.parent?.data);
     div.transition().duration(200).style("opacity", 0.9);
     div
       .html(hoverTooltip(d.data, d.parent?.data))
-      .style("left", d3.event.pageX + "px")
-      .style("top", d3.event.pageY - 28 + "px");
+      .style("left", `${x}px`)
+      .style("top", `${y - 28}px`);
   };
 
   const removeTooltip = () => {
@@ -201,13 +207,15 @@ export function runD3StuffSecondIteration(
       data: CaseNode;
       parent: { data: CaseNode | undefined };
     }) {
-      addTooltip(edgeHoverTooltip, onEdgeHover, d);
+      // @ts-ignore
+      // eslint-disable-next-line no-restricted-globals
+      addTooltip(edgeHoverTooltip, onEdgeHover, d, event.pageX, event.pageY);
     })
     .on("mouseout", () => {
       removeTooltip();
     })
     .attr("marker-end", "url(#arrow)")
-    .attr("id", (d: { data: { id: string } }) => "path" + d.data.id)
+    .attr("id", (d: { data: { id: string } }) => `path${d.data.id}`)
     .attr("class", (d: { depth: number }) =>
       classnames(styles.link, `level-${d.depth}`)
     )
@@ -248,7 +256,9 @@ export function runD3StuffSecondIteration(
     .enter()
     .append("g")
     .on("mouseover", (d: { data: CaseNode; parent: { data?: CaseNode } }) => {
-      addTooltip(nodeHoverTooltip, onNodeHover, d);
+      // @ts-ignore
+      // eslint-disable-next-line no-restricted-globals
+      addTooltip(nodeHoverTooltip, onNodeHover, d, event.pageX, event.pageY);
     })
     .on("mouseout", () => {
       removeTooltip();
@@ -280,12 +290,9 @@ export function runD3StuffSecondIteration(
         )
     )
     .attr("transform", (d: { data: { date: string | Date }; x: string }) => {
-      const translate =
-        "translate(" +
-        (timeScale(parseDate(d.data.date)) - margin.left) +
-        "," +
-        d.x +
-        ")";
+      const translate = `translate(${
+        timeScale(parseDate(d.data.date)) - margin.left
+      },${d.x})`;
       if (translate.indexOf("NaN") > 0) {
         return "";
       }
@@ -298,7 +305,7 @@ export function runD3StuffSecondIteration(
     .attr("class", styles.icon)
     .attr("y", -6)
     .attr("x", 20)
-    .html('<i class="fas fa-plane"/>')
+    .html('<i class="fas fa-plane" />')
     .attr("width", ({ data }: { data: CaseNode }) => data.name.length + 25)
     .attr("height", 50)
     .attr(
@@ -313,7 +320,7 @@ export function runD3StuffSecondIteration(
     .attr("class", `${styles.icon} ${styles.tourist}`)
     .attr("y", -6)
     .attr("x", 20)
-    .html('<i class="fas fa-users"/>')
+    .html('<i class="fas fa-users" />')
     .attr("width", ({ data }: { data: CaseNode }) => data.name.length + 25)
     .attr("height", 50)
     .attr(
@@ -334,11 +341,10 @@ export function runD3StuffSecondIteration(
     )
     .attr("y", -14)
     .attr("x", -6)
-    .html((d: { data: CaseNode }) => `<i class="fas fa-${d.data.gender}"></i>`);
+    .html((d: { data: CaseNode }) => `<i class="fas fa-${d.data.gender}" />`);
 
   // Draw event rect
   const group = node
-
     .filter((d: { data: Event }) => d.data.description)
     .append("g")
     .attr("class", styles.case)
@@ -397,7 +403,7 @@ export function runD3StuffSecondIteration(
 
     const g = eventsElem
       .append("g")
-      .attr("transform", "translate(" + timeScale(date) + "," + 50 + ")")
+      .attr("transform", `translate(${timeScale(date)},50)`)
       .attr("class", styles.event)
       .on("mouseover", () => {
         div.transition().duration(200).style("opacity", 0.9);
@@ -407,7 +413,7 @@ export function runD3StuffSecondIteration(
           .style("top", d3.event.pageY - 28 + "px");
       })
       .on("mouseout", function () {
-        div.transition().duration(200).style("opacity", 0);
+        removeTooltip();
       });
 
     g.append("polygon")
@@ -427,7 +433,7 @@ export function runD3StuffSecondIteration(
     g.append("line")
       .attr("y1", 0)
       .attr("y2", innerHeight - 25)
-      .attr("transform", "translate(0," + -innerHeight + ")");
+      .attr("transform", `translate(0,${innerHeight})`);
   });
 
   return {
