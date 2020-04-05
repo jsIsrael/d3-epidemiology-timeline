@@ -41,9 +41,16 @@
 .male {
   color: rgb(22, 130, 218);
 }
+.male.dead {
+  color: rgb(0, 0, 0);
+}
 
 .female {
   color: rgb(246, 0, 0);
+}
+
+.female.dead {
+  color: rgb(0, 0, 0);
 }
 
 .tourist {
@@ -51,7 +58,7 @@
 }
 
 .dead {
-  border-left: 5px rgb(192, 39, 12) solid;
+  border-left: 5px rgb(0, 0, 0) solid;
 }
 
 .sick {

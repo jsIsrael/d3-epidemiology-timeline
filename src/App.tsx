@@ -37,11 +37,11 @@ function App() {
 
   const edgeHoverTooltip = React.useCallback(
     (node: CaseNode, parent?: CaseNode) =>
-      `${parent?.name} <i class="fas fa-arrow-left"></i> ${node.name}(id:${node.id})`,
+      `${parent?.name} <i class="fas fa-arrow-left" /> ${node.name}(id:${node.id})`,
     []
   );
 
-  const nodeHoverTooltip = React.useCallback((node, parent) => {
+  const nodeHoverTooltip = React.useCallback((node) => {
     return `<div>
       ${node.id}<br />
       <b>${node.name}</b><br />
@@ -87,7 +87,7 @@ function App() {
     <div className={styles.wrapper}>
       <Graph
         caseNodes={caseNodes}
-        nodeToStartWith={735314}
+        nodeToStartWith={611822}
         edgeHoverTooltip={edgeHoverTooltip}
         nodeHoverTooltip={nodeHoverTooltip}
       />

@@ -22,12 +22,13 @@ export function genderHebToEng(heb: "זכר" | "נקבה"): "male" | "female" {
 }
 
 export function statusHebToEng(
-  heb: "החלים" | "מאומת"
+  heb: "החלים" | "מאומת" | "נפטר"
 ): "sick" | "healthy" | "dead" {
   return (
     ({
       החלים: "healthy",
       מאומת: "sick",
+      נפטר: "dead",
     } as const)[heb] || heb
   );
 }
