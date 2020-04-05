@@ -2,9 +2,10 @@ import * as React from "react";
 import { runD3StuffSecondIteration } from "./secondIterationD3";
 import { CaseNode } from "../listToGraph/interfaces";
 import Select from "react-select";
-import { List } from "react-virtualized";
-import styles from "./secondIteration.module.css";
+import MenuList from "./menuList";
+import { makeFlatNodes, isSelfOrInChildren } from "./graphUtils";
 import { useDebounce } from "../utils";
+import styles from "./secondIteration.module.css";
 
 interface Props {
   onNodeHover?: (node: CaseNode, parent?: CaseNode) => void;
@@ -14,59 +15,6 @@ interface Props {
   caseNodes: CaseNode[];
   nodeToStartWith: number;
 }
-
-function makeFlatNodes(caseNodes: CaseNode[]) {
-  return caseNodes.reduce<CaseNode[]>((a, b, c) => {
-    a.push(b);
-    if (b.children) {
-      a.push(...makeFlatNodes(b.children));
-    }
-
-    return a;
-  }, []);
-}
-
-function isSelfOrInChildren(
-  wishedCaseNodeId: number,
-  nodeToCheck: CaseNode
-): boolean {
-  if (wishedCaseNodeId === nodeToCheck.id) {
-    return true;
-  }
-
-  if (nodeToCheck.children) {
-    return nodeToCheck.children.some((childNode) => {
-      return isSelfOrInChildren(wishedCaseNodeId, childNode);
-    });
-  }
-
-  return false;
-}
-
-const MenuList = (props: any) => {
-  const rows = props.children;
-  // @ts-ignore
-  const rowRenderer = ({ key, index, isScrolling, isVisible, style }) => {
-    // @ts-ignore
-    const elm = rows[index];
-    return (
-      <div key={key} style={style}>
-        {elm}
-      </div>
-    );
-  };
-
-  return (
-    <List
-      style={{ width: "100%", textAlign: "right" }}
-      width={300}
-      height={300}
-      rowHeight={30}
-      rowCount={rows && rows.length ? rows.length : 0}
-      rowRenderer={rowRenderer}
-    />
-  );
-};
 
 export function Graph({
   onNodeHover,
@@ -100,14 +48,14 @@ export function Graph({
   const [selectedNode, setSelectedNode] = React.useState(
     options.find((o) => o.value === nodeToStartWith)
   );
+  const selectedNodeDebounced = useDebounce(selectedNode, 300);
 
   const [applyAsFilter, setApplyAsFilter] = React.useState(false);
   const [
     applyUnknownInfectedSource,
     setApplyUnknownInfectedSource,
   ] = React.useState(false);
-
-  const selectedNodeDebounced = useDebounce(selectedNode, 300);
+  const [graphDense, setGraphDense] = React.useState(50);
 
   const maybeFilteredCaseNodes = React.useMemo(() => {
     if (applyAsFilter && selectedNode) {
@@ -143,7 +91,8 @@ export function Graph({
         onEdgeHover,
         nodeHoverTooltip,
         edgeHoverTooltip,
-        onCaseClick
+        onCaseClick,
+        graphDense
       );
 
       focusFn.current = focus;
@@ -157,6 +106,7 @@ export function Graph({
     nodeHoverTooltip,
     edgeHoverTooltip,
     maybeFilteredCaseNodes,
+    graphDense,
   ]);
 
   React.useEffect(() => {
@@ -182,6 +132,13 @@ export function Graph({
         previousFocused?.classList.remove(styles.focused);
       }
     });
+  };
+
+  const handleDenseChange = (e: any) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value)) {
+      setGraphDense(value);
+    }
   };
 
   return (
@@ -212,6 +169,15 @@ export function Graph({
           onChange={(e) => setApplyUnknownInfectedSource((v) => !v)}
         />
         Infected Source Unknown
+        <br />
+        <input
+          min={15}
+          max={50}
+          value={graphDense}
+          onChange={handleDenseChange}
+        />
+        <br />
+        Change Graph Dense
       </div>
     </>
   );

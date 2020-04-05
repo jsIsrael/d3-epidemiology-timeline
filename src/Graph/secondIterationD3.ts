@@ -54,7 +54,8 @@ export function runD3StuffSecondIteration(
   onEdgeHover: (node: CaseNode, parent?: CaseNode) => void = noop,
   nodeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
   edgeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
-  onCaseClick: (node: CaseNode, parent?: CaseNode) => void = noop
+  onCaseClick: (node: CaseNode, parent?: CaseNode) => void = noop,
+  graphDense: number
 ) {
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);
@@ -80,12 +81,12 @@ export function runD3StuffSecondIteration(
 
   const innerWidth = nodesInitial.height * 700;
 
-  const innerHeight = nodesInitial.leaves().length * 100;
+  const innerHeight = nodesInitial.leaves().length * 50;
 
   const treemap = d3
     .tree<CaseNode>()
     .size([innerHeight, innerWidth])
-    .nodeSize([50, 100]);
+    .nodeSize([graphDense, 100]);
 
   // maps the node data to the tree layout
   const nodes = treemap(nodesInitial);
