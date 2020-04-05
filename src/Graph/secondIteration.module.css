@@ -155,7 +155,8 @@ div.tooltip {
 }
 
 .focused {
-  animation: blink 2s linear infinite;
+  animation: blink 2s linear;
+  animation-iteration-count: 10;
 }
 
 @keyframes blink {
