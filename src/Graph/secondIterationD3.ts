@@ -51,7 +51,8 @@ export function runD3StuffSecondIteration(
   nodeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
   edgeHoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
   onCaseClick: (node: CaseNode, parent?: CaseNode) => void = noop,
-  graphDense: number
+  graphDense: number,
+  refresh: number
 ) {
   // @ts-ignore
   d3.timeFormatDefaultLocale(heTimeLocale);

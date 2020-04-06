@@ -54,6 +54,11 @@ export function Graph({
     setApplyUnknownInfectedSource,
   ] = React.useState(false);
   const [graphDense, setGraphDense] = React.useState(50);
+  const [refresh, setRefresh] = React.useState(0);
+
+  window.onresize = () => {
+    setRefresh(refresh + 1);
+  };
 
   const maybeFilteredCaseNodes = React.useMemo(() => {
     if (applyAsFilter && selectedNode) {
@@ -91,7 +96,8 @@ export function Graph({
           nodeHoverTooltip,
           edgeHoverTooltip,
           onCaseClick,
-          graphDense
+          graphDense,
+          refresh
         );
 
         focusFn.current = focus;
@@ -107,6 +113,7 @@ export function Graph({
       edgeHoverTooltip,
       maybeFilteredCaseNodes,
       graphDense,
+      refresh,
     ]
   );
 
