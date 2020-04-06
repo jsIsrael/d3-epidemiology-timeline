@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ReactNode } from "react";
 import { runD3StuffSecondIteration } from "./secondIterationD3";
 import { CaseNode } from "../listToGraph/interfaces";
 import Select from "react-select";
@@ -14,6 +15,7 @@ interface Props {
   edgeHoverTooltip?: (node: CaseNode, parent?: CaseNode) => string;
   caseNodes: CaseNode[];
   nodeToStartWith: number;
+  moreFilters?: ReactNode;
 }
 
 export function Graph({
@@ -23,6 +25,7 @@ export function Graph({
   edgeHoverTooltip,
   caseNodes: inputCaseNodes,
   nodeToStartWith,
+  moreFilters,
 }: Props) {
   const focusFn = React.useRef<(e: Element) => void>(() => {});
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -171,6 +174,7 @@ export function Graph({
           label="Infected Source Unknown"
         />
         <DenseInput graphDense={graphDense} setGraphDense={setGraphDense} />
+        {moreFilters}
       </div>
     </>
   );
