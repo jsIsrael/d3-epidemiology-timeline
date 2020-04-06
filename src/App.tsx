@@ -45,6 +45,12 @@ function App() {
     return `<div>
       ${node.id}<br />
       <b>${node.name}</b><br />
+      ${
+        node.type === "Patiant"
+          ? (node.age || "גיל לא קיים במערכת") + "<br />"
+          : ""
+      }
+      ${node.type === "Patiant" ? (node.city || "") + "<br />" : ""}
       ${node.gender ? node.gender + "<br />" : ""}
       ${node.date.toLocaleDateString("he-IL")}<br />
       ${node.status || ""}

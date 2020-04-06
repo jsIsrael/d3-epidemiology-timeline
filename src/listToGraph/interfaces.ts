@@ -8,6 +8,8 @@ export interface CaseNode {
   id: number;
   type: "Patiant" | "Flight" | "Tourist";
   date: string | Date;
+  age: number;
+  city: string;
   gender?: "male" | "female";
   status?: "sick" | "healthy" | "dead";
   children?: CaseNode[];

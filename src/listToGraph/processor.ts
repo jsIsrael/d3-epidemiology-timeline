@@ -57,6 +57,8 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
           id: n.id,
           type: "Patiant",
           name: `${n.name}`,
+          age: n.age,
+          city: n.city,
           date: n.firstPositiveTestDate,
           gender: n.gender,
           status: n.status,

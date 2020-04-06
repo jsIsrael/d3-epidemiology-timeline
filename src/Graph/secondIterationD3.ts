@@ -70,6 +70,8 @@ export function runD3StuffSecondIteration(
     children: caseNodes,
     id: 123123,
     infectedSource: "לא ידוע",
+    age: 38,
+    city: "ירושלים",
   };
 
   //  assigns the data to a hierarchy using parent-child relationships
