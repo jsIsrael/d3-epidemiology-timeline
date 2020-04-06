@@ -202,9 +202,13 @@ export function runD3StuffSecondIteration(
       data: CaseNode;
       parent: { data: CaseNode | undefined };
     }) {
-      // @ts-ignore
-      // eslint-disable-next-line no-restricted-globals
-      addTooltip(edgeHoverTooltip, onEdgeHover, d, event.pageX, event.pageY);
+      addTooltip(
+        edgeHoverTooltip,
+        onEdgeHover,
+        d,
+        d3.event.pageX,
+        d3.event.pageY
+      );
     })
     .on("mouseout", () => {
       removeTooltip();
@@ -255,9 +259,13 @@ export function runD3StuffSecondIteration(
     .enter()
     .append("g")
     .on("mouseover", (d: { data: CaseNode; parent: { data?: CaseNode } }) => {
-      // @ts-ignore
-      // eslint-disable-next-line no-restricted-globals
-      addTooltip(nodeHoverTooltip, onNodeHover, d, event.pageX, event.pageY);
+      addTooltip(
+        nodeHoverTooltip,
+        onNodeHover,
+        d,
+        d3.event.pageX,
+        d3.event.pageY
+      );
     })
     .on("mouseout", () => {
       removeTooltip();

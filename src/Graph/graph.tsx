@@ -71,15 +71,15 @@ export function Graph({
     return inputCaseNodes;
   }, [applyAsFilter, inputCaseNodes, selectedNode, applyUnknownInfectedSource]);
 
-  const onCaseClick = (e: any) => {
-    const selected = options.find((option) => {
-      return e.data.id === option.value;
-    });
-    setSelectedNode(selected);
-  };
-
   React.useEffect(() => {
     let destroyFn = () => {};
+
+    const onCaseClick = (e: any) => {
+      const selected = options.find((option) => {
+        return e.data.id === option.value;
+      });
+      setSelectedNode(selected);
+    };
 
     if (containerRef.current) {
       const { destroy, focus } = runD3StuffSecondIteration(
