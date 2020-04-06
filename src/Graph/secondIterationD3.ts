@@ -163,13 +163,13 @@ export function runD3StuffSecondIteration(
     .attr("class", styles.arrow)
     .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
-  let g = svg.append("g").attr("id", "innerGroup");
-
   svg
     .append("g")
     .attr("class", "x axis")
     .attr("transform", `translate(0,${height - 30})`)
     .call(xAxis);
+
+  let g = svg.append("g").attr("id", "innerGroup");
 
   const link = g.selectAll(".link").data(nodes.descendants().slice(1)).enter();
 

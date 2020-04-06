@@ -56,9 +56,10 @@ export function Graph({
   const [graphDense, setGraphDense] = React.useState(50);
   const [refresh, setRefresh] = React.useState(0);
 
-  window.onresize = () => {
+  const resize = () => {
     setRefresh(refresh + 1);
   };
+  window.addEventListener("resize", resize);
 
   const maybeFilteredCaseNodes = React.useMemo(() => {
     if (applyAsFilter && selectedNode) {
@@ -78,7 +79,9 @@ export function Graph({
 
   React.useEffect(
     () => {
-      let destroyFn = () => {};
+      let destroyFn = () => {
+        window.removeEventListener("resize", resize);
+      };
 
       const onCaseClick = (e: any) => {
         const selected = options.find((option) => {
