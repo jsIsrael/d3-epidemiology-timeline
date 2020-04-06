@@ -173,11 +173,15 @@ export function runD3StuffSecondIteration(
   const link = g.selectAll(".link").data(nodes.descendants().slice(1)).enter();
 
   // Add the tooltip element to the graph
-  const div = d3
-    .select(container)
-    .append("div")
-    .attr("class", styles.tooltip)
-    .style("opacity", 0);
+  const tooltip = document.querySelector("#graph-tooltip");
+  if (!tooltip) {
+    const tooltipDiv = document.createElement("div");
+    tooltipDiv.classList.add(styles.tooltip);
+    tooltipDiv.style.opacity = "0";
+    tooltipDiv.id = "graph-tooltip";
+    document.body.appendChild(tooltipDiv);
+  }
+  const div = d3.select("#graph-tooltip");
 
   const addTooltip = (
     hoverTooltip: (node: CaseNode, parent?: CaseNode) => string = noop2,
