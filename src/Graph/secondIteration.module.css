@@ -13,6 +13,18 @@
   box-shadow: 1px 1px 1px #000;
 }
 
+.denseInput {
+  width: 100%;
+  direction: rtl;
+  background-color: hsl(0,0%,100%);
+  border: solid 1px hsl(0,0%,80%);
+  border-radius: 4px;
+  min-height: 38px;
+  box-sizing: border-box;
+  padding: 2px 8px;
+  font-size: 16px;
+}
+
 .container svg {
   display: block;
 }

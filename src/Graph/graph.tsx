@@ -173,6 +173,7 @@ export function Graph({
           max={50}
           value={graphDense}
           onChange={handleDenseChange}
+          className={styles.denseInput}
         />
         <br />
         Change Graph Dense
