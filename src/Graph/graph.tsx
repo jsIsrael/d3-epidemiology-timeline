@@ -71,41 +71,44 @@ export function Graph({
     return inputCaseNodes;
   }, [applyAsFilter, inputCaseNodes, selectedNode, applyUnknownInfectedSource]);
 
-  React.useEffect(() => {
-    let destroyFn = () => {};
+  React.useEffect(
+    () => {
+      let destroyFn = () => {};
 
-    const onCaseClick = (e: any) => {
-      const selected = options.find((option) => {
-        return e.data.id === option.value;
-      });
-      setSelectedNode(selected);
-    };
+      const onCaseClick = (e: any) => {
+        const selected = options.find((option) => {
+          return e.data.id === option.value;
+        });
+        setSelectedNode(selected);
+      };
 
-    if (containerRef.current) {
-      const { destroy, focus } = runD3StuffSecondIteration(
-        containerRef.current,
-        maybeFilteredCaseNodes,
-        onNodeHover,
-        onEdgeHover,
-        nodeHoverTooltip,
-        edgeHoverTooltip,
-        onCaseClick,
-        graphDense
-      );
+      if (containerRef.current) {
+        const { destroy, focus } = runD3StuffSecondIteration(
+          containerRef.current,
+          maybeFilteredCaseNodes,
+          onNodeHover,
+          onEdgeHover,
+          nodeHoverTooltip,
+          edgeHoverTooltip,
+          onCaseClick,
+          graphDense
+        );
 
-      focusFn.current = focus;
-      destroyFn = destroy;
-    }
+        focusFn.current = focus;
+        destroyFn = destroy;
+      }
 
-    return destroyFn;
-  }, [
-    onNodeHover,
-    onEdgeHover,
-    nodeHoverTooltip,
-    edgeHoverTooltip,
-    maybeFilteredCaseNodes,
-    graphDense,
-  ]);
+      return destroyFn;
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      onNodeHover,
+      onEdgeHover,
+      nodeHoverTooltip,
+      edgeHoverTooltip,
+      maybeFilteredCaseNodes,
+      graphDense,
+    ]
+  );
 
   React.useEffect(() => {
     if (!selectedNodeDebounced) {
