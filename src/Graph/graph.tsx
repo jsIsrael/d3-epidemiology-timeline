@@ -2,7 +2,7 @@ import * as React from "react";
 import { runD3StuffSecondIteration } from "./secondIterationD3";
 import { CaseNode } from "../listToGraph/interfaces";
 import Select from "react-select";
-import MenuList from "./menuList";
+import { DenseInput, MenuList, Checkbox } from "./components";
 import { makeFlatNodes, isSelfOrInChildren } from "./graphUtils";
 import { useDebounce } from "../utils";
 import styles from "./secondIteration.module.css";
@@ -145,13 +145,6 @@ export function Graph({
     });
   };
 
-  const handleDenseChange = (e: any) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value)) {
-      setGraphDense(value);
-    }
-  };
-
   return (
     <>
       <div ref={containerRef} className={styles.container} />
@@ -167,29 +160,17 @@ export function Graph({
             setSelectedNode(v);
           }}
         />
-        <input
-          type="checkbox"
+        <Checkbox
           checked={applyAsFilter}
           onChange={(e) => setApplyAsFilter((v) => !v)}
+          label="Use As Filter"
         />
-        Use As Filter
-        <br />
-        <input
-          type="checkbox"
+        <Checkbox
           checked={applyUnknownInfectedSource}
           onChange={(e) => setApplyUnknownInfectedSource((v) => !v)}
+          label="Infected Source Unknown"
         />
-        Infected Source Unknown
-        <br />
-        <input
-          min={15}
-          max={50}
-          value={graphDense}
-          onChange={handleDenseChange}
-          className={styles.denseInput}
-        />
-        <br />
-        Change Graph Dense
+        <DenseInput graphDense={graphDense} setGraphDense={setGraphDense} />
       </div>
     </>
   );
