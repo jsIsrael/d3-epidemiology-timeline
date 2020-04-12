@@ -14,6 +14,7 @@ export interface CaseNode {
   status?: "sick" | "healthy" | "dead";
   children?: CaseNode[];
   infectedSource: string;
+  sameDate?: boolean;
 }
 
 export type ProcessedNode =

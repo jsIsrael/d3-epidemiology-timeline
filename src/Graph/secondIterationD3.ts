@@ -229,12 +229,15 @@ export function runD3StuffSecondIteration(
       const calcY = (item: { data: CaseNode }) =>
         timeScale(parseDate(item.data.date)) - margin.left;
       const sameDate = getSameDate(d.parent?.data, d.data, parseDate);
+      if (sameDate) {
+        d.data.sameDate = true;
+      }
 
       const path =
         "M" +
-        calcY(d.parent!) +
+        (calcY(d.parent!) + (d.parent?.data.sameDate ? 30 : 0)) +
         "," +
-        d.parent!.x +
+        (d.parent!.x + (d.parent?.data.sameDate ? 30 : 0)) +
         "C" +
         (calcY(d) + calcY(d.parent!)) / 2 +
         "," +
