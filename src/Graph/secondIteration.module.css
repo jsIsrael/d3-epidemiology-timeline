@@ -77,10 +77,10 @@
 }
 
 .event line {
-  stroke: #ddd;
+  stroke: darkslategray;
   stroke-dasharray: 5;
   stroke-width: 5px;
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 .event-text {
