@@ -40,9 +40,9 @@ export const getSameDate = (parent: any, child: any, parseDate: any) => {
 
   const parentDate = parseDate(parent.date);
   const childDate = parseDate(child.date);
-  const sameDate =
+  return (
     parentDate.getDate() === parentDate.getDate() &&
     parentDate.getMonth() === childDate.getMonth() &&
-    parentDate.getFullYear() === childDate.getFullYear();
-  return sameDate;
+    parentDate.getFullYear() === childDate.getFullYear()
+  );
 };
