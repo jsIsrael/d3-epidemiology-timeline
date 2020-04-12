@@ -52,8 +52,10 @@ export function Graph({
   const selectedNodeDebounced = useDebounce(selectedNode, 300);
 
   const [applyAsFilter, setApplyAsFilter] = React.useState(false);
-  const [graphDense, setGraphDense] = React.useState(50);
   const [refresh, setRefresh] = React.useState(0);
+
+  const [graphDense, setGraphDense] = React.useState(50);
+  const graphDenseDebounced = useDebounce(graphDense, 10);
 
   const resize = () => {
     setRefresh(refresh + 1);
@@ -92,7 +94,7 @@ export function Graph({
           nodeHoverTooltip,
           edgeHoverTooltip,
           onCaseClick,
-          graphDense,
+          graphDenseDebounced,
           refresh
         );
 
@@ -108,7 +110,7 @@ export function Graph({
       nodeHoverTooltip,
       edgeHoverTooltip,
       maybeFilteredCaseNodes,
-      graphDense,
+      graphDenseDebounced,
       refresh,
     ]
   );

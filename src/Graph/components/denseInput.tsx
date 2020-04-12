@@ -17,17 +17,18 @@ const DenseInput = (props: Props) => {
   };
 
   return (
-    <>
+    <div className={styles.denseInputContainer}>
       <input
-        min={15}
+        type="range"
+        min={5}
         max={50}
+        step={5}
         value={graphDense}
         onChange={handleDenseChange}
         className={styles.denseInput}
       />
-      <br />
-      Change Graph Dense
-    </>
+      Change Tree Dense
+    </div>
   );
 };
 
