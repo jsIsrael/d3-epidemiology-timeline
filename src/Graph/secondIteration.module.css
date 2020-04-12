@@ -32,6 +32,7 @@
   width: 30px;
   height: 30px;
   font-size: 20px;
+  padding-left: 2px;
 }
 
 .node.Flight rect {

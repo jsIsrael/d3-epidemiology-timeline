@@ -32,3 +32,17 @@ export function isSelfOrInChildren(
 
   return false;
 }
+
+export const getSameDate = (parent: any, child: any, parseDate: any) => {
+  if (!parent) {
+    return false;
+  }
+
+  const parentDate = parseDate(parent.date);
+  const childDate = parseDate(child.date);
+  const sameDate =
+    parentDate.getDate() === parentDate.getDate() &&
+    parentDate.getMonth() === childDate.getMonth() &&
+    parentDate.getFullYear() === childDate.getFullYear();
+  return sameDate;
+};

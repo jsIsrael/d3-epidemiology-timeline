@@ -7,7 +7,7 @@ import classnames from "classnames";
 import { Event, events2 } from "./data2ndIteration";
 import { CaseNode, RawEdgeV2, RawNode } from "../listToGraph/interfaces";
 import { buildGraph, toCaseNodeTree } from "../listToGraph/processor";
-import { noop, noop2 } from "./graphUtils";
+import { noop, noop2, getSameDate } from "./graphUtils";
 
 export function prepareCaseNodes(
   rawNodes: RawNode[],
@@ -228,11 +228,7 @@ export function runD3StuffSecondIteration(
     .attr("d", (d: d3.HierarchyPointNode<CaseNode>) => {
       const calcY = (item: { data: CaseNode }) =>
         timeScale(parseDate(item.data.date)) - margin.left;
-
-      const sameDate =
-        // @ts-ignore
-        parseDate(d.parent?.data.date).getDate() ===
-        parseDate(d.data.date).getDate();
+      const sameDate = getSameDate(d.parent?.data, d.data, parseDate);
 
       const path =
         "M" +
@@ -304,10 +300,7 @@ export function runD3StuffSecondIteration(
         )
     )
     .attr("transform", (d: d3.HierarchyPointNode<CaseNode>) => {
-      const sameDate =
-        // @ts-ignore
-        parseDate(d.parent?.data.date).getDate() ===
-        parseDate(d.data.date).getDate();
+      const sameDate = getSameDate(d.parent?.data, d.data, parseDate);
       const translate = `translate(${
         timeScale(parseDate(d.data.date)) - margin.left + (sameDate ? 30 : 0)
       }, ${sameDate ? d.x + 30 : d.x})`;
