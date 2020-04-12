@@ -229,15 +229,13 @@ export function runD3StuffSecondIteration(
       const calcY = (item: { data: CaseNode }) =>
         timeScale(parseDate(item.data.date)) - margin.left;
       const sameDate = getSameDate(d.parent?.data, d.data, parseDate);
-      if (sameDate) {
-        d.data.sameDate = true;
-      }
+      const noChildren = !d.data.children;
 
       const path =
         "M" +
-        (calcY(d.parent!) + (d.parent?.data.sameDate ? 30 : 0)) +
+        calcY(d.parent!) +
         "," +
-        (d.parent!.x + (d.parent?.data.sameDate ? 30 : 0)) +
+        d.parent!.x +
         "C" +
         (calcY(d) + calcY(d.parent!)) / 2 +
         "," +
@@ -248,10 +246,10 @@ export function runD3StuffSecondIteration(
         d.x +
         " " +
         (calcY(d) +
-          (sameDate ? 30 : 0) +
+          (sameDate && noChildren ? 30 : 0) +
           (parseDate(d.parent!.data.date) > parseDate(d.data.date) ? 5 : -5)) +
         "," +
-        (d.x + (sameDate ? 30 : 0));
+        (d.x + (sameDate && noChildren ? 30 : 0));
       if (path.indexOf("NaN") > 0) {
         return "";
       }
@@ -304,9 +302,12 @@ export function runD3StuffSecondIteration(
     )
     .attr("transform", (d: d3.HierarchyPointNode<CaseNode>) => {
       const sameDate = getSameDate(d.parent?.data, d.data, parseDate);
+      const noChildren = !d.data.children;
       const translate = `translate(${
-        timeScale(parseDate(d.data.date)) - margin.left + (sameDate ? 30 : 0)
-      }, ${sameDate ? d.x + 30 : d.x})`;
+        timeScale(parseDate(d.data.date)) -
+        margin.left +
+        (sameDate && noChildren ? 30 : 0)
+      }, ${sameDate && noChildren ? d.x + 30 : d.x})`;
       if (translate.indexOf("NaN") > 0) {
         return "";
       }
