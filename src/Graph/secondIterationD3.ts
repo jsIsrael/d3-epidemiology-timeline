@@ -359,7 +359,10 @@ export function runD3StuffSecondIteration(
     )
     .attr("y", -14)
     .attr("x", -6)
-    .html((d: { data: CaseNode }) => `<i class="fas fa-${d.data.gender}" />`);
+    .html(
+      (d: { data: CaseNode }) =>
+        `<i class="fas fa-${d.data.gender === "male" ? "mars" : "venus"}" />`
+    );
 
   // Draw event rect
   const group = node
