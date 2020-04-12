@@ -34,7 +34,7 @@ export function isSelfOrInChildren(
 }
 
 export const getSameDate = (parent: any, child: any, parseDate: any) => {
-  if (!parent) {
+  if (!parent || parent.type === "Flight") {
     return false;
   }
 
