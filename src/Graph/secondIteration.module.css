@@ -32,7 +32,7 @@
   width: 30px;
   height: 30px;
   font-size: 20px;
-  padding-left: 2px;
+  padding-left: 5px;
 }
 
 .node.Flight rect {
@@ -42,6 +42,7 @@
 .male {
   color: rgb(22, 130, 218);
 }
+
 .male.dead {
   color: rgb(0, 0, 0);
 }
@@ -59,15 +60,15 @@
 }
 
 .dead {
-  border-left: 5px rgb(0, 0, 0) solid;
+  color: rgb(0, 0, 0);
 }
 
 .sick {
-  border-left: 5px rgb(230, 145, 8) solid;
+  color: rgb(230, 145, 8);
 }
 
 .healthy {
-  border-left: 5px rgb(17, 167, 17) solid;
+  color: rgb(17, 167, 17);
 }
 
 .event polygon {
