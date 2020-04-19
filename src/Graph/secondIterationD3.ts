@@ -451,8 +451,8 @@ export function runD3StuffSecondIteration(
 
     g.append("line")
       .attr("y1", 0)
-      .attr("y2", 25)
-      .attr("transform", `translate(0,25)`);
+      .attr("y2", innerHeight - 25)
+      .attr("transform", `translate(0,-${innerHeight})`);
   });
 
   return {
