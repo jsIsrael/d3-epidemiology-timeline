@@ -59,6 +59,7 @@ export function runD3StuffSecondIteration(
 
   // set the dimensions and margins of the diagram
   const margin = { top: 20, right: 50, bottom: 30, left: 80 };
+  const sameDateLeafDistance = 60;
 
   const containerRect = container.getBoundingClientRect();
   const height = containerRect.height;
@@ -246,10 +247,10 @@ export function runD3StuffSecondIteration(
         d.x +
         " " +
         (calcY(d) +
-          (sameDate && noChildren ? 30 : 0) +
+          (sameDate && noChildren ? sameDateLeafDistance : 0) +
           (parseDate(d.parent!.data.date) > parseDate(d.data.date) ? 5 : -5)) +
         "," +
-        (d.x + (sameDate && noChildren ? 30 : 0));
+        (d.x + (sameDate && noChildren ? sameDateLeafDistance : 0));
       if (path.indexOf("NaN") > 0) {
         return "";
       }
@@ -306,8 +307,8 @@ export function runD3StuffSecondIteration(
       const translate = `translate(${
         timeScale(parseDate(d.data.date)) -
         margin.left +
-        (sameDate && noChildren ? 30 : 0)
-      }, ${sameDate && noChildren ? d.x + 30 : d.x})`;
+        (sameDate && noChildren ? sameDateLeafDistance : 0)
+      }, ${sameDate && noChildren ? d.x + sameDateLeafDistance : d.x})`;
       if (translate.indexOf("NaN") > 0) {
         return "";
       }

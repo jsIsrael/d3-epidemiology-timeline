@@ -93,7 +93,7 @@ function App() {
     <div className={styles.wrapper}>
       <Graph
         caseNodes={caseNodes}
-        nodeToStartWith={611822}
+        nodeToStartWith={caseNodes[0] ? caseNodes[0].id : 611822}
         edgeHoverTooltip={edgeHoverTooltip}
         nodeHoverTooltip={nodeHoverTooltip}
       />
