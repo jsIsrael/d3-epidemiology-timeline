@@ -121,7 +121,7 @@ export function Graph({
     }
 
     setFocusOnSelectedNode(selectedNodeDebounced.value);
-  }, [focusFn, selectedNodeDebounced, applyAsFilter]);
+  }, [focusFn, selectedNodeDebounced, applyAsFilter, graphDenseDebounced]);
 
   const setFocusOnSelectedNode = (id: number) => {
     window.requestAnimationFrame(() => {
