@@ -15,6 +15,7 @@
 
 .container svg {
   display: block;
+  direction: ltr;
 }
 
 /* Hack to hide nodes without dates... */
