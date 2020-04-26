@@ -336,7 +336,7 @@ export function runD3StuffSecondIteration(
     .attr("class", `${styles.icon} ${styles.tourist}`)
     .attr("y", -6)
     .attr("x", 20)
-    .html('<i class="fas fa-users" />')
+    .html('<i class="fas fa-globe-americas" />')
     .attr("width", ({ data }: { data: CaseNode }) => data.name.length + 25)
     .attr("height", 50)
     .attr(
