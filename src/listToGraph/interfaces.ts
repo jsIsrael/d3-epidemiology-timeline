@@ -8,12 +8,12 @@ export interface CaseNode {
   id: number;
   type: "Patiant" | "Flight" | "Tourist";
   date: string | Date;
-  age: number;
-  city: string;
+  age?: number;
+  city?: string;
   gender?: "male" | "female";
   status?: "sick" | "healthy" | "dead";
   children?: CaseNode[];
-  infectedSource: string;
+  infectedSource?: string;
   sameDate?: boolean;
 }
 
@@ -33,6 +33,7 @@ export interface ProcessedNodeTourist extends WithParentsAndChildren {
   id: number;
   name: string;
   uid: string;
+  date: Date | null;
 }
 
 export interface ProcessedNodeFlight extends WithParentsAndChildren {
@@ -145,6 +146,7 @@ export interface RawNodeTourist {
   labels: ["Tourist"];
   name: string;
   uid: string;
+  flightDate: string;
 }
 
 export interface RawNodePatient {

@@ -52,6 +52,13 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
           // @ts-ignore
           country,
         };
+      } else if (n.type === "Tourist") {
+        return {
+          type: "Tourist",
+          name: n.name,
+          id: n.id,
+          date: n.date || new Date(),
+        };
       } else if (n.type === "Patient") {
         return {
           id: n.id,
@@ -84,7 +91,9 @@ export function toCaseNodeTree(nodes: ProcessedNode[]): CaseNode[] {
 
   return caseNodes.filter((n) => {
     const o = orignMap.get(n.id)!;
-    return o.parents.length === 0 || n.type === "Flight";
+    return (
+      o.parents.length === 0 || n.type === "Flight" || n.type === "Tourist"
+    );
   });
 }
 
@@ -162,6 +171,7 @@ function touristRawNodeToNode(node: RawNodeTourist): ProcessedNodeTourist {
     uid: node.uid,
     name: name,
     type: "Tourist",
+    date: new Date(node.flightDate),
     children: [],
     parents: [],
   };
